@@ -1,0 +1,12 @@
+pandas
+numpy
+duckdb
+openpyxl
+pyarrow
+geopandas
+shapely>=2
+pyproj
+rasterio
+iduedu==2.2.0
+objectnat==2.1.0
+nbformat

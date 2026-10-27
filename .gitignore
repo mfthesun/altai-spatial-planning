@@ -1,0 +1,14 @@
+# сырые архивы и большие исходники — не в репозиторий (см. data/raw/README.md)
+data/raw/*
+!data/raw/README.md
+data/sources/
+*.zip
+*.pdf
+results/
+dem/
+*.urbangraph
+*.pkl
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.DS_Store
