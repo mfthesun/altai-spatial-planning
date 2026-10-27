@@ -69,10 +69,21 @@ pop = c.sql(f"""select object_name region, year, avg(indicator_value)*1000 pop f
 pop['year'] = pop.year + 1
 pop = pd.concat([pop, pd.DataFrame([{'region': 'Республика Алтай', 'year': 2025, 'pop': 210095}])])
 pop = pop.rename(columns={'pop': 'pop_avg'})
+codes = c.sql(f"""select report_region_name region, year, income, arg_max(indicator_value, report_date) v from a
+   where index_form='5-НДФЛ' and indicator_code='Y777000028' and object_level='Субъект РФ' and report_type='Свод'
+   and individual_type in ('Всего','CD') and coalesce(tax_rate,'CD') in ('Всего','CD') and tax_authority='Всего'
+   and indicator_period='Значение показателя за год' and source not like 'Приложение%'
+   and income in ('По коду дохода 2000','По коду дохода 1011') group by all""").df()
+codes = codes.pivot_table(index=['region', 'year'], columns='income', values='v').reset_index().rename(columns={
+    'По коду дохода 2000': 'wage_earners_5', 'По коду дохода 1011': 'interest_recipients_5'})
+reg = reg.merge(codes, on=['region', 'year'], how='left')
+LOG.append('Код дохода 1011 (проценты): РА 1 411 (2023) → 15 270 (2024) получателей — именно он даёт скачок числа получателей доходов в 2024 г.; '
+           'получатели зарплаты (код 2000) почти не изменились')
 reg = reg.merge(pop[['region', 'year', 'pop_avg']], on=['region', 'year'], how='left')
 reg['income_7_per_cap_month'] = reg.income_7 / reg.pop_avg / 12
 reg['tax_7_per_cap'] = reg.tax_7 / reg.pop_avg
 reg['earners_share'] = reg.earners_5 / reg.pop_avg
+reg['wage_earners_share'] = reg.wage_earners_5 / reg.pop_avg
 reg['income_per_earner_month'] = reg.income_5 / reg.earners_5 / 12
 reg['agents_per_1000'] = reg.agents / reg.pop_avg * 1000
 # Тыва 2018: доход по 7-НДФЛ 18,3 млрд против 27,4 (2017) и 36,7 (2019) — сбой публикации
@@ -104,6 +115,13 @@ seg = c.sql("""select object_oktmo oktmo, individual_type it, arg_max(indicator_
 seg = seg.pivot_table(index='oktmo', columns='it', values='v')
 foreign = seg[[x for x in seg.columns if x.startswith('Иностранные')][0]].rename('foreign_2024')
 ip = seg[[x for x in seg.columns if x.startswith('ИП')][0]].rename('ip_2024')
+
+mc = c.sql("""select object_oktmo oktmo, income, arg_max(indicator_value, report_date) v from a
+   where report_region_name='Республика Алтай' and report_type='МО' and index_form='5-НДФЛ' and year=2024 and indicator_code='Y777000028'
+   and object_level like 'Муниц%' and indicator_period='Значение показателя за год' and individual_type in ('Всего','CD')
+   and coalesce(tax_rate,'CD') in ('Всего','CD') and tax_authority='Всего' and income in ('По коду дохода 2000','По коду дохода 1011')
+   group by all""").df().pivot_table(index='oktmo', columns='income', values='v')
+wage24 = mc['По коду дохода 2000'].rename('wage_2024'); int24 = mc['По коду дохода 1011'].rename('interest_2024')
 
 # население и ФОТ из сводного датасета
 P = pd.read_csv(OUT / 'mo_panel_long.csv', sep=';', dtype={'oktmo': str})
@@ -140,9 +158,12 @@ summ = pd.DataFrame({
     'Получателей доходов (5-НДФЛ), 2024': e5,
     'Иностранцев среди получателей, 2024': foreign,
     'ИП и главы КФХ среди получателей, 2024': ip,
+    'Получателей зарплаты (код 2000), 2024': wage24,
+    'Получателей процентов (код 1011), 2024': int24,
 })
 p24 = popm[popm.year == 2024].set_index('oktmo').pop_jan
 summ['Получатели доходов на 100 жит. (по месту учёта агента), 2024'] = (summ['Получателей доходов (5-НДФЛ), 2024'] / p24 * 100).round(1)
+summ['Получатели зарплаты на 100 жит. (по месту учёта агента), 2024'] = (summ['Получателей зарплаты (код 2000), 2024'] / p24 * 100).round(1)
 summ = summ.reset_index().rename(columns={'index': 'oktmo'})
 
 OUT.mkdir(exist_ok=True, parents=True)
@@ -153,4 +174,4 @@ summ.to_csv(OUT / 'ndfl_mo_summary.csv', sep=';', index=False, encoding='utf-8-s
 print('\n'.join(LOG))
 pd.set_option('display.width', 250)
 print(summ.to_string())
-print(reg[['region', 'year', 'income_7_per_cap_month', 'tax_7_per_cap', 'earners_share', 'income_per_earner_month', 'agents_per_1000']].round(3).to_string())
+print(reg[['region', 'year', 'income_7_per_cap_month', 'earners_share', 'wage_earners_share', 'interest_recipients_5', 'income_per_earner_month', 'agents_per_1000']].round(3).to_string())

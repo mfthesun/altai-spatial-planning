@@ -42,13 +42,16 @@ fig, ax = plt.subplots(1, 2, figsize=(12, 4.4))
 for r, g in reg.groupby('region'):
     g = g.dropna(subset=['income_7_per_cap_month'])
     ax[0].plot(g.year, g.income_7_per_cap_month / 1000, marker='o', lw=2, color=COL[r], label=r.replace('Республика ', ''))
-    g2 = reg[(reg.region == r)].dropna(subset=['earners_share'])
-    ax[1].plot(g2.year, g2.earners_share * 100, marker='o', lw=2, color=COL[r], label=r.replace('Республика ', ''))
+    g2 = reg[(reg.region == r)].dropna(subset=['wage_earners_share'])
+    ax[1].plot(g2.year, g2.wage_earners_share * 100, marker='o', lw=2, color=COL[r], label=r.replace('Республика ', ''))
+    if r == 'Республика Алтай':
+        g3 = reg[(reg.region == r)].dropna(subset=['earners_share'])
+        ax[1].plot(g3.year, g3.earners_share * 100, ls='--', lw=1.5, color=COL[r], alpha=.6, label='Алтай, все виды дохода')
 ax[0].set_title('Доходы, выплаченные налоговыми агентами,\nтыс. руб. на жителя в месяц (7-НДФЛ)')
-ax[1].set_title('Получатели доходов от налоговых агентов,\n% населения (5-НДФЛ)')
+ax[1].set_title('Получатели зарплаты (код дохода 2000)\nот налоговых агентов, % населения (5-НДФЛ)')
 for a in ax:
     a.grid(alpha=.3); a.spines[['top', 'right']].set_visible(False); a.legend(frameon=False)
-fig.text(0.01, -0.02, 'Источник: ФНС (5-НДФЛ, 7-НДФЛ) / «Если быть точным»; население — Росстат на 1 января. Тыва 2016, 2018, 2021 — нет или выброс.', fontsize=8, color='#555')
+fig.text(0.01, -0.02, 'Источник: ФНС (5-НДФЛ, 7-НДФЛ) / «Если быть точным»; население — Росстат на 1 января. Тыва 2016, 2018, 2021 — нет или выброс. Пунктир: скачок 2024 г. дают получатели мелких процентов (код 1011), не зарплаты.', fontsize=8, color='#555')
 fig.tight_layout(); fig.savefig(V4 / 'ndfl_regions.png', dpi=150, bbox_inches='tight'); plt.close(fig)
 
 s = summ.sort_values('То же на жителя в месяц, 2025, руб.')
@@ -90,7 +93,9 @@ RCOLS = {'region': 'Регион', 'year': 'Год', 'agents': 'Налоговы
          'tax_7': 'НДФЛ исчисленный (7-НДФЛ), руб.', 'records_7': 'Сведений о физлицах (7-НДФЛ)', 'earners_5': 'Получателей доходов (5-НДФЛ)',
          'income_5': 'Сумма дохода (5-НДФЛ), руб.', 'pop_avg': 'Население на 1 января', 'income_7_per_cap_month': 'Доходы на жителя в месяц, руб.',
          'tax_7_per_cap': 'НДФЛ на жителя в год, руб.', 'earners_share': 'Доля получателей доходов в населении',
-         'income_per_earner_month': 'Доход на получателя в месяц (5-НДФЛ), руб.', 'agents_per_1000': 'Агентов на 1000 жит.'}
+         'income_per_earner_month': 'Доход на получателя в месяц (5-НДФЛ), руб.', 'agents_per_1000': 'Агентов на 1000 жит.',
+         'wage_earners_5': 'Получателей зарплаты, код 2000 (5-НДФЛ)', 'interest_recipients_5': 'Получателей процентов, код 1011 (5-НДФЛ)',
+         'wage_earners_share': 'Доля получателей зарплаты в населении'}
 MCOLS = {'oktmo': 'ОКТМО', 'mo': 'МО', 'year': 'Год', 'agents': 'Налоговых агентов', 'income_7': 'Доходы, выплаченные агентами МО, руб.',
          'tax_7': 'НДФЛ исчисленный, руб.', 'records_7': 'Сведений о физлицах', 'pop_jan': 'Население на 1 января',
          'fot_rosstat': 'ФОТ Росстата, тыс. руб.', 'income_7_per_cap_month': 'Доходы на жителя в месяц, руб.', 'tax_7_per_cap': 'НДФЛ на жителя, руб.',
