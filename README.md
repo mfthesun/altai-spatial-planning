@@ -4,9 +4,9 @@
 
 Цель — концепция пространственного развития Республики Алтай на горизонтах 2035/2050.
 
-**Репозиторий открыт: подключиться может любой участник — см. [CONTRIBUTING.md](CONTRIBUTING.md). Задачи команды — в [Issues](https://github.com/__GH_LOGIN__/__GH_REPO__/issues).**
+**Репозиторий открыт: подключиться может любой участник — см. [CONTRIBUTING.md](CONTRIBUTING.md). Задачи команды — в [Issues](https://github.com/mfthesun/altai-spatial-planning/issues).**
 
-[![Открыть в Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/__GH_LOGIN__/__GH_REPO__) [![Открыть блокнот в Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/__GH_LOGIN__/__GH_REPO__/blob/main/relief/altai_access_mountain.ipynb) Методика курса: диагностика → SWOT → доктрина → ТЭЗ → каркасы и узлы → мероприятия → флагманские проекты.
+[![Открыть в Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mfthesun/altai-spatial-planning) [![Открыть блокнот в Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mfthesun/altai-spatial-planning/blob/main/relief/altai_access_mountain.ipynb) Методика курса: диагностика → SWOT → доктрина → ТЭЗ → каркасы и узлы → мероприятия → флагманские проекты.
 
 ## Структура
 
