@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "hospitals_services_republican",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "name": "Республиканская больница", "settlement": "г. Горно-Алтайск", "address": "г. Горно-Алтайск, пр. Коммунистический, 120–140", "level": "республиканская", "beds": 645, "visits_shift": 1300, "oktmo_mo": "84701000", "mo": "г. Горно-Алтайск", "latitude": 51.9594991, "longitude": 85.9200243, "capacity": 210094, "capacity_beds": 645, "scenario_A_60min": true, "scenario_B_120min": true, "shift_m": 2776, "osm_id": "way/235877888", "coord_source": "OSM amenity=hospital (Nominatim, 27.10.2026), сверено с адресом СТП" }, "geometry": { "type": "Point", "coordinates": [ 85.9200243, 51.9594991 ] } }
+]
+}

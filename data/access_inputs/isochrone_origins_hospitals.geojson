@@ -1,0 +1,18 @@
+{
+"type": "FeatureCollection",
+"name": "isochrone_origins_hospitals",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "name": "Республиканская больница", "mo": "г. Горно-Алтайск", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 85.9200243, 51.9594991 ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "Майминская РБ", "mo": "Майминский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 85.8886047, 52.0010714 ] } },
+{ "type": "Feature", "properties": { "id": 3, "name": "Чойская РБ", "mo": "Чойский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 86.5392111, 52.0171485 ] } },
+{ "type": "Feature", "properties": { "id": 4, "name": "Турочакская РБ", "mo": "Турочакский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 87.1164636, 52.2612486 ] } },
+{ "type": "Feature", "properties": { "id": 5, "name": "Шебалинская РБ", "mo": "Шебалинский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 85.675367, 51.2833673 ] } },
+{ "type": "Feature", "properties": { "id": 6, "name": "Онгудайская РБ", "mo": "Онгудайский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 86.1439057, 50.7394112 ] } },
+{ "type": "Feature", "properties": { "id": 7, "name": "Улаганская РБ", "mo": "Улаганский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 87.9625143, 50.6292818 ] } },
+{ "type": "Feature", "properties": { "id": 8, "name": "Кош-Агачская РБ", "mo": "Кош-Агачский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 88.6695348, 50.0174343 ] } },
+{ "type": "Feature", "properties": { "id": 9, "name": "Усть-Канская РБ", "mo": "Усть-Канский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 84.7679132, 50.9371768 ] } },
+{ "type": "Feature", "properties": { "id": 10, "name": "Усть-Коксинская РБ", "mo": "Усть-Коксинский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 85.6370169, 50.2709246 ] } },
+{ "type": "Feature", "properties": { "id": 11, "name": "Чемальская РБ", "mo": "Чемальский район", "type": "больница" }, "geometry": { "type": "Point", "coordinates": [ 85.9965905, 51.4190208 ] } }
+]
+}
