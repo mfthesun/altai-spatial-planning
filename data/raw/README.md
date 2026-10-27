@@ -15,8 +15,9 @@
 | `budgets/` | `data_budgets_140_v20241118_csv.zip` |
 | `housing/` | `data_housing_construction_161_csv.zip` |
 | `air/` | `data_air_emissions_147_v20250515_csv.zip` |
+| `ndfl/r04`, `ndfl/r17`, `ndfl/r19` | НДФЛ по регионам: `https://storage.yandexcloud.net/tochno-st-catalog/FNS/data_ndfl_155_v20260722/by_regions/data_ndfl_155_<04|17|19>_v20260722.zip` (Алтай, Тыва, Хакасия) |
 | `rc.parquet` | `data_regions_collection_102_v20260313.parquet` |
 | `ezh.txt`, `racif.txt`, `ser.txt` | Текстовый слой ежегодника, «Республика Алтай в цифрах» и Стратегии СЭР (pdftotext) |
 
 Коды показателей БД ПМО — в справочнике проекта: [Google Sheet](https://docs.google.com/spreadsheets/d/1fain2iBHAJEkaXYk-8aAcjEA8tdR5GKF134AAk1UCSQ).
-Разделы 31/32 и НДФЛ (несколько ГБ) в сборке не используются.
+Разделы 31/32 и полный архив НДФЛ (несколько ГБ) в сборке не используются — вместо полного НДФЛ берутся региональные архивы.
