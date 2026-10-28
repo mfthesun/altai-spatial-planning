@@ -114,5 +114,8 @@
 | `scenario_interdistrict_center.csv` | Все варианты с одним и двумя центрами |
 | `scenario_interdistrict_sensitivity.csv` | Лучшие варианты при пороге 102 / 120 / 138 мин |
 | `scenario_new_points_60min.csv` | Жадный подбор новых точек уровня А |
-| `map_scenario_interdistrict_center.png` | Карта: сейчас и с центрами в Кош-Агаче и Усть-Кане. **Старое оформление, для слайдов не использовать.** Скрипт теперь рисует две карты в едином макете — `map_scenario_center_now.png` и `map_scenario_center_two.png`; они появятся при следующем прогоне `scenario_south_center.py` с OD-матрицей из `results/` |
+| `map_scenario_center_now.png` | Карта: время до многопрофильной помощи сейчас (только Республиканская больница). Подпись: «В 120 мин — 56,8 % жителей, на юге — 0 %» |
+| `map_scenario_center_two.png` | Карта: то же с межрайонными центрами в Кош-Агаче и Усть-Кане. Подпись: «В 120 мин — 81,1 % жителей, на юге — 65,5 %» |
 | `chart_scenario_interdistrict_center.png` | Доля жителей в 120 мин по вариантам |
+
+**Пересчёт 28.10.2026.** Граф пересобран скриптом `scripts/access/build_graph.py`, OD-матрица — `scripts/access/services_access.py`. Таблицы сценариев совпали с прежними байт в байт. Доступность школ и первичной медпомощи — `docs/access_services.md`.
