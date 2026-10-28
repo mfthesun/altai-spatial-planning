@@ -83,8 +83,14 @@ for thr in (102, 120, 138):
 pd.DataFrame(sens).to_csv(OUT / "scenario_interdistrict_sensitivity.csv", index=False)
 
 # --- 4. картинки -------------------------------------------------------------------------
+import sys  # noqa: E402
+
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Patch  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "scripts"))
+from maptools import finish, map_figure, save_map  # noqa: E402
 
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
 INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
@@ -93,9 +99,10 @@ CRS = 32645
 border = gpd.read_file(INP / "altai_boundary.geojson").to_crs(CRS)
 pts = settl.to_crs(CRS)
 CENTERS = [8, 9]  # Кош-Агачская + Усть-Канская — лучшая пара
-fig, axes = plt.subplots(1, 2, figsize=(12, 6.5))
-for ax, (title, ids) in zip(axes, [("Сейчас: только Республиканская больница", [REP]),
-                                   ("Сценарий: + центры в Кош-Агаче и Усть-Кане", [REP, *CENTERS])]):
+bx0, by0, bx1, by1 = border.total_bounds
+for name, ids in [("map_scenario_center_now.png", [REP]),            # сейчас: только Республиканская
+                  ("map_scenario_center_two.png", [REP, *CENTERS])]:  # + центры в Кош-Агаче и Усть-Кане
+    fig, ax = map_figure()
     t = od[ids].min(axis=1)
     cls = pd.cut(t, [-1, 60, 120, 180, 240, 1e6], labels=False)
     o = pts.assign(c=cls).sort_values("c")
@@ -105,13 +112,15 @@ for ax, (title, ids) in zip(axes, [("Сейчас: только Республи
     hp = hosp.loc[ids].to_crs(CRS)
     ax.scatter(hp.geometry.x, hp.geometry.y, marker="P", s=80, c=INK, edgecolor=SURFACE, zorder=4)
     m = metrics(t, 120)
-    ax.set_title(f"{title}\nв 120 мин: {m['share']:.1f} % жителей, на юге {m['share_south']:.1f} %", loc="left", color=INK, fontsize=10)
-    ax.set_axis_off()
-axes[1].legend(handles=[Patch(color=RAMP[i], label=l) for i, l in enumerate(["до 60", "60–120", "120–180", "180–240", "больше 240"])],
-               loc="upper right", frameon=False, title="Мин до центра")
-fig.suptitle("Время до многопрофильной стационарной помощи (горный граф)", x=0.01, ha="left", color=INK, fontsize=12)
-fig.savefig(OUT / "map_scenario_interdistrict_center.png", dpi=200, bbox_inches="tight")
-plt.close(fig)
+    print(f"{name}: в 120 мин {m['share']:.1f} % жителей, на юге {m['share_south']:.1f} %")  # для подписи к рисунку
+    finish(fig, ax, extent=(bx0 - 15000, by0 - 15000, bx1 + 15000, by1 + 15000),
+           handles=[Patch(color=RAMP[i], label=l) for i, l in enumerate(["до 60", "60–120", "120–180", "180–240", "больше 240"])] +
+                   [Line2D([], [], color=SURFACE, lw=0, label="размер кружка — число жителей"),
+                    Line2D([], [], marker="P", ls="", ms=9, color=INK,
+                           label="Республиканская больница" if len(ids) == 1 else "Республиканская больница\nи межрайонные центры"),
+                    Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай")],
+           title="Условные обозначения\nнаселённые пункты: время\nдо ближайшего центра, мин", basemap_style="relief", basemap_alpha=0.5)
+    save_map(fig, OUT / name)
 
 show = pd.concat([mc[mc.k == 0].head(1), mc[mc.k == 1].head(3), mc[mc.k == 2].head(1)])
 lab = show.centers.str.replace(" РБ", "").str.replace("Кош-Агачская", "Кош-Агач").str.replace("Усть-Канская", "Усть-Кан") \
@@ -125,6 +134,5 @@ ax.set_yticks(y, lab)
 ax.set_xlim(0, 105)
 ax.set_xlabel("% жителей республики в 120 мин от многопрофильной больницы")
 ax.spines[["top", "right"]].set_visible(False)
-ax.set_title("Где разместить межрайонный медицинский центр", loc="left", color=INK, fontsize=11)
 fig.savefig(OUT / "chart_scenario_interdistrict_center.png", dpi=200, bbox_inches="tight")
 plt.close(fig)

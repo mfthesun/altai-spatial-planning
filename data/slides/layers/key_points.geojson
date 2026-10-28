@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "key_points",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "label": "Бийск (ж/д)", "query": "Бийск, Алтайский край", "osm_type": "relation", "osm_id": 1437129, "display_name": "Бийск, Алтайский край, Сибирский федеральный округ, Россия" }, "geometry": { "type": "Point", "coordinates": [ 85.2148673, 52.5394905 ] } },
+{ "type": "Feature", "properties": { "label": "МАПП Ташанта", "query": "Ташанта, Кош-Агачский район", "osm_type": "node", "osm_id": 280515309, "display_name": "Ташанта, Ташантинское сельское поселение, Кош-Агачский район, Республика Алтай, Сибирский федеральный округ, Россия" }, "geometry": { "type": "Point", "coordinates": [ 89.1924837, 49.7174902 ] } },
+{ "type": "Feature", "properties": { "label": "Карагай", "query": "Карагай, Усть-Коксинский район", "osm_type": "way", "osm_id": 637517513, "display_name": "Карагай, Карагайское сельское поселение, Усть-Коксинский район, Республика Алтай, Сибирский федеральный округ, Россия" }, "geometry": { "type": "Point", "coordinates": [ 84.620626, 50.3967497 ] } },
+{ "type": "Feature", "properties": { "label": "Кокоря", "query": "Кокоря, Кош-Агачский район", "osm_type": "node", "osm_id": 471363120, "display_name": "Кокоря, Кокоринское сельское поселение, Кош-Агачский район, Республика Алтай, Сибирский федеральный округ, Россия" }, "geometry": { "type": "Point", "coordinates": [ 89.001228, 49.913734 ] } },
+{ "type": "Feature", "properties": { "label": "плато Укок", "query": "Укок", "osm_type": "relation", "osm_id": 14943812, "display_name": "Укок, Джазаторское сельское поселение, Кош-Агачский район, Республика Алтай, Сибирский федеральный округ, Россия" }, "geometry": { "type": "Point", "coordinates": [ 87.3585847, 49.1960202 ] } },
+{ "type": "Feature", "properties": { "label": "Барнаул", "query": "Барнаул", "osm_type": "relation", "osm_id": 1550512, "display_name": "Барнаул, городской округ Барнаул, Алтайский край, Сибирский федеральный округ, 656000, Россия" }, "geometry": { "type": "Point", "coordinates": [ 83.7788448, 53.3475493 ] } },
+{ "type": "Feature", "properties": { "label": "Новосибирск", "query": "Новосибирск", "osm_type": "relation", "osm_id": 366544, "display_name": "Новосибирск, Новосибирская область, Сибирский федеральный округ, 630000, Россия" }, "geometry": { "type": "Point", "coordinates": [ 82.9515989, 54.9678145 ] } }
+]
+}
