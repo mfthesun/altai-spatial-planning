@@ -114,5 +114,5 @@
 | `scenario_interdistrict_center.csv` | Все варианты с одним и двумя центрами |
 | `scenario_interdistrict_sensitivity.csv` | Лучшие варианты при пороге 102 / 120 / 138 мин |
 | `scenario_new_points_60min.csv` | Жадный подбор новых точек уровня А |
-| `map_scenario_interdistrict_center.png` | Карта: сейчас и с центрами в Кош-Агаче и Усть-Кане |
+| `map_scenario_interdistrict_center.png` | Карта: сейчас и с центрами в Кош-Агаче и Усть-Кане. **Старое оформление** (без линейки и стрелки севера): нужна OD-матрица из `results/`, перерисуется при следующем прогоне `scenario_south_center.py` |
 | `chart_scenario_interdistrict_center.png` | Доля жителей в 120 мин по вариантам |

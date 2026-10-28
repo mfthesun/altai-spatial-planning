@@ -2,10 +2,14 @@
 
 Читает results/ (выход блокнота), пишет лёгкие итоги в data/access_results/:
 таблицы по МО и НП, слои изохрон и PNG-карты для слайдов.
+Если results/ нет (граф и OD-матрицы в репозиторий не входят), перерисовывает только карты
+по уже сохранённым итогам из data/access_results/; таблицы при этом не перезаписываются,
+а подложкой служат магистрали из data/slides/layers/roads_main.geojson.
 Запуск из корня репозитория: python scripts/access/make_access_maps.py
 """
 import os
 import shutil
+import sys
 from pathlib import Path
 
 import geopandas as gpd
@@ -20,6 +24,10 @@ INP = ROOT / "data" / "access_inputs"
 OUT = ROOT / "data" / "access_results"
 OUT.mkdir(exist_ok=True)
 CRS = 32645  # UTM 45N для отрисовки
+FROM_RESULTS = (RES / "time_to_hospital_flat_vs_mountain.geojson").exists()
+SRC = RES if FROM_RESULTS else OUT
+sys.path.insert(0, str(ROOT / "scripts"))
+from maptools import north_arrow, scale_bar  # noqa: E402
 
 # ординальная шкала времени, светлое → тёмное (проверена validate_palette.js --ordinal)
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
@@ -27,38 +35,44 @@ INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.edgecolor": MUTED,
                      "figure.facecolor": SURFACE, "axes.facecolor": SURFACE})
 
-t = gpd.read_file(RES / "time_to_hospital_flat_vs_mountain.geojson").to_crs(CRS)
+t = gpd.read_file(RES / "time_to_hospital_flat_vs_mountain.geojson" if FROM_RESULTS
+                  else OUT / "time_to_hospital.geojson").to_crs(CRS)
 hosp = gpd.read_parquet(INP / "hospitals_services.parquet").to_crs(CRS)
 border = gpd.read_file(INP / "altai_boundary.geojson").to_crs(CRS)
 # dist — верхняя граница ступени, мин; ступень 0 пустая
-iso_ga = gpd.read_file(RES / "isochrones_gorno_altaysk_mountain.geojson").to_crs(CRS).query("dist > 0")
-iso_h = gpd.read_file(RES / "isochrones_hospitals_mountain.geojson").to_crs(CRS).query("dist > 0")
+iso_ga = gpd.read_file(SRC / "isochrones_gorno_altaysk_mountain.geojson").to_crs(CRS).query("dist > 0")
+iso_h = gpd.read_file(SRC / "isochrones_hospitals_mountain.geojson").to_crs(CRS).query("dist > 0")
 edges = None  # подложка: магистрали из горного графа (нужен iduedu)
 if (RES / "altai_drive_mountain.urbangraph").exists():
     import iduedu as ie
     e = ie.UrbanGraph.read(RES / "altai_drive_mountain.urbangraph").edges_gdf
     edges = e[e["highway"].astype(str).str.contains("trunk|primary|secondary")][["geometry"]].to_crs(CRS)
+elif (ROOT / "data" / "slides" / "layers" / "roads_main.geojson").exists():
+    edges = gpd.read_file(ROOT / "data" / "slides" / "layers" / "roads_main.geojson")[["geometry"]].to_crs(CRS)
 pop = t["pop_2025_est"]
 
 # --- таблицы -----------------------------------------------------------------------------
 def share(mask, d):
     return round(d.loc[mask, "pop_2025_est"].sum() / d["pop_2025_est"].sum() * 100, 1)
 
-rows = []
-for mo, d in list(t.groupby("mo")) + [("Республика Алтай", t)]:
-    rows.append(dict(mo=mo, pop_2025_est=int(round(d.pop_2025_est.sum())), n_settl=len(d),
-                     A60_share_mountain=share(d.tmin_mount_A <= 60, d), A60_share_flat=share(d.tmin_flat_A <= 60, d),
-                     A60_pop_outside=int(round(d.loc[d.tmin_mount_A > 60, "pop_2025_est"].sum())),
-                     A_tmax_min=round(d.tmin_mount_A.max()),
-                     B120_share_mountain=share(d.tmin_mount_B <= 120, d), B120_share_flat=share(d.tmin_flat_B <= 120, d),
-                     B_tmean_weighted_min=round((d.tmin_mount_B * d.pop_2025_est).sum() / d.pop_2025_est.sum())))
-mo_tab = pd.DataFrame(rows)
-mo_tab.to_csv(OUT / "access_by_mo.csv", index=False)
-cols = ["id", "name", "mo", "pop_2025_est", "tmin_flat_A", "tmin_mount_A", "tmin_flat_B", "tmin_mount_B", "delta_A_min"]
-t.to_crs(4326)[cols + ["geometry"]].round(1).to_file(OUT / "time_to_hospital.geojson", driver="GeoJSON")
-t[cols].round(1).sort_values("tmin_mount_A", ascending=False).to_csv(OUT / "time_to_hospital.csv", index=False)
-for f in ["provision_summary.csv", "isochrones_gorno_altaysk_mountain.geojson", "isochrones_hospitals_mountain.geojson"]:
-    shutil.copy(RES / f, OUT / f)
+if FROM_RESULTS:
+    rows = []
+    for mo, d in list(t.groupby("mo")) + [("Республика Алтай", t)]:
+        rows.append(dict(mo=mo, pop_2025_est=int(round(d.pop_2025_est.sum())), n_settl=len(d),
+                         A60_share_mountain=share(d.tmin_mount_A <= 60, d), A60_share_flat=share(d.tmin_flat_A <= 60, d),
+                         A60_pop_outside=int(round(d.loc[d.tmin_mount_A > 60, "pop_2025_est"].sum())),
+                         A_tmax_min=round(d.tmin_mount_A.max()),
+                         B120_share_mountain=share(d.tmin_mount_B <= 120, d), B120_share_flat=share(d.tmin_flat_B <= 120, d),
+                         B_tmean_weighted_min=round((d.tmin_mount_B * d.pop_2025_est).sum() / d.pop_2025_est.sum())))
+    mo_tab = pd.DataFrame(rows)
+    mo_tab.to_csv(OUT / "access_by_mo.csv", index=False)
+    cols = ["id", "name", "mo", "pop_2025_est", "tmin_flat_A", "tmin_mount_A", "tmin_flat_B", "tmin_mount_B", "delta_A_min"]
+    t.to_crs(4326)[cols + ["geometry"]].round(1).to_file(OUT / "time_to_hospital.geojson", driver="GeoJSON")
+    t[cols].round(1).sort_values("tmin_mount_A", ascending=False).to_csv(OUT / "time_to_hospital.csv", index=False)
+    for f in ["provision_summary.csv", "isochrones_gorno_altaysk_mountain.geojson", "isochrones_hospitals_mountain.geojson"]:
+        shutil.copy(RES / f, OUT / f)
+else:  # пересобираем только карты: таблицы считаны из уже сохранённых итогов
+    mo_tab = pd.read_csv(OUT / "access_by_mo.csv")
 
 
 # --- карты -------------------------------------------------------------------------------
@@ -93,8 +107,13 @@ r = mo_tab.iloc[-1]
 ax.text(0.01, 0.01, f"За 60 мин доезжают {r.A60_share_mountain:.1f} % жителей; вне зоны — {r.A60_pop_outside:,} чел.".replace(",", " "),
         transform=ax.transAxes, color=INK)
 ax.legend(handles=h + [Line2D([], [], marker="P", ls="", c=INK, label="больница (11)"),
-                       Line2D([], [], color=INK, ls="--", lw=0.6, label="зона 60 мин")],
-          loc="upper right", frameon=False, title="Населённые пункты")
+                       Line2D([], [], color=INK, ls="--", lw=0.6, label="зона 60 мин"),
+                       Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
+                       Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
+          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, title="Условные обозначения\nнаселённые пункты, время в пути, мин:",
+          alignment="left")
+scale_bar(ax, loc=(0.04, 0.06))
+north_arrow(ax, loc=(0.95, 0.88))
 save(fig, "map_time_nearest_hospital.png")
 
 # 2. до Республиканской больницы (сценарий Б)
@@ -105,8 +124,13 @@ for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"]):
 h = points(ax, "tmin_mount_B", [-1, 60, 120, 180, 240, 1e6], ["до 60", "60–120", "120–180", "180–240", "больше 240"])
 ax.text(0.01, 0.01, f"За 120 мин доезжают {r.B120_share_mountain:.1f} % жителей", transform=ax.transAxes, color=INK)
 ax.legend(handles=h + [Line2D([], [], color=INK, ls=ls, lw=0.6, label=f"изохрона {int(d)} мин")
-                       for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"])],
-          loc="upper right", frameon=False, title="Населённые пункты")
+                       for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"])] +
+                      [Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
+                       Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
+          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, title="Условные обозначения\nнаселённые пункты, время в пути, мин:",
+          alignment="left")
+scale_bar(ax, loc=(0.04, 0.06))
+north_arrow(ax, loc=(0.95, 0.88))
 save(fig, "map_time_republican_hospital.png")
 
 # 3. доля жителей в нормативе по МО

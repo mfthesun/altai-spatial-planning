@@ -83,8 +83,14 @@ for thr in (102, 120, 138):
 pd.DataFrame(sens).to_csv(OUT / "scenario_interdistrict_sensitivity.csv", index=False)
 
 # --- 4. картинки -------------------------------------------------------------------------
+import sys  # noqa: E402
+
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Patch  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "scripts"))
+from maptools import north_arrow, scale_bar  # noqa: E402
 
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
 INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
@@ -107,8 +113,13 @@ for ax, (title, ids) in zip(axes, [("Сейчас: только Республи
     m = metrics(t, 120)
     ax.set_title(f"{title}\nв 120 мин: {m['share']:.1f} % жителей, на юге {m['share_south']:.1f} %", loc="left", color=INK, fontsize=10)
     ax.set_axis_off()
-axes[1].legend(handles=[Patch(color=RAMP[i], label=l) for i, l in enumerate(["до 60", "60–120", "120–180", "180–240", "больше 240"])],
-               loc="upper right", frameon=False, title="Мин до центра")
+    scale_bar(ax, loc=(0.04, 0.04), frac=0.3)
+    north_arrow(ax, loc=(0.95, 0.86))
+axes[1].legend(handles=[Patch(color=RAMP[i], label=l) for i, l in enumerate(["до 60", "60–120", "120–180", "180–240", "больше 240"])] +
+                       [Line2D([], [], marker="P", ls="", ms=9, color=INK, label="Республиканская больница\nи межрайонные центры"),
+                        Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай")],
+               loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, alignment="left",
+               title="Условные обозначения\nнаселённые пункты (размер — население),\nвремя до ближайшего центра, мин:")
 fig.suptitle("Время до многопрофильной стационарной помощи (горный граф)", x=0.01, ha="left", color=INK, fontsize=12)
 fig.savefig(OUT / "map_scenario_interdistrict_center.png", dpi=200, bbox_inches="tight")
 plt.close(fig)

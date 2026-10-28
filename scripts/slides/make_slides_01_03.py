@@ -5,6 +5,7 @@
 data/dataset_v4/mo_summary.csv, data/dataset_v3/settlements.csv, data/access_results/.
 Пишет PNG и CSV в data/slides/. Запуск из корня репозитория: python scripts/slides/make_slides_01_03.py
 """
+import sys
 from pathlib import Path
 
 import geopandas as gpd
@@ -16,6 +17,8 @@ from matplotlib.patches import Patch
 from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from maptools import north_arrow, scale_bar  # noqa: E402
 OUT = ROOT / "data" / "slides"
 LAY = OUT / "layers"
 CRS = 32645  # UTM 45N для отрисовки
@@ -84,12 +87,12 @@ for name, text, (dx, dy) in [("МАПП Ташанта", "МАПП Ташант�
     label(ax, p, text, dx=dx, dy=dy)
 x0, y0, x1, y1 = border.total_bounds
 view = box(x0 - 180000, y0 - 90000, x1 + 120000, y1 + 260000)
-ru = nb[(nb.admin == "Russia") & ~nb.name.isin(["Gorno-Altay", "Novosibirsk"])]  # РА — границами МО; Новосибирская под легендой
+ru = nb[(nb.admin == "Russia") & ~nb.name.isin(["Gorno-Altay", "Novosibirsk", "Krasnoyarsk"])]  # РА — границами МО; остальные у края кадра
 for _, r in ru.iterrows():
     g = r.geometry.intersection(view)
     if g.area > 4e9:  # подписываем только регионы, заметные в кадре
         c = g.representative_point()
-        ax.annotate(r.name_ru, (c.x, c.y), color=MUTED, fontsize=7.5, ha="center")
+        ax.annotate(r.name_ru, (c.x, c.y), color=MUTED, fontsize=7.5, ha="center", annotation_clip=True, clip_on=True)
 for country, ru_name, (dx, dy) in [("Kazakhstan", "КАЗАХСТАН", (0, 0)), ("Mongolia", "МОНГОЛИЯ", (20000, -70000)),
                                     ("China", "КИТАЙ", (0, 0))]:
     g = nb[nb.admin == country].union_all().intersection(view)
@@ -102,9 +105,18 @@ ax.set_axis_off()
 ax.set_title("Республика Алтай: соседи и выходы за пределы республики", loc="left", color=INK, fontsize=11)
 ax.legend(handles=[Line2D([], [], color=RAMP[3], lw=2.2, label="Р-256 «Чуйский тракт»"),
                    Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали (OSM trunk/primary)"),
-                   Line2D([], [], marker="o", ls="", color=INK, label="районные центры"),
-                   Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=RAMP[3], label="внешние выходы")],
-          loc="upper left", frameon=False, fontsize=8)
+                   Line2D([], [], marker="o", ls="", ms=7, color=INK, label="Горно-Алтайск"),
+                   Line2D([], [], marker="o", ls="", ms=4, color=INK, label="районные центры"),
+                   Line2D([], [], marker="o", ls="", ms=4, color=MUTED, label="города за пределами РА"),
+                   Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=RAMP[3], label="внешние выходы"),
+                   Line2D([], [], color=INK, lw=1.2, label="граница Республики Алтай"),
+                   Line2D([], [], color=NODATA, lw=0.8, label="границы муниципальных образований"),
+                   Patch(color=RU_FILL, label="другие регионы России"),
+                   Patch(color=FOREIGN_FILL, label="другие государства")],
+          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, fontsize=7.5,
+          title="Условные обозначения", title_fontsize=8, alignment="left")
+scale_bar(ax, loc=(0.04, 0.03))
+north_arrow(ax, loc=(0.95, 0.88))
 save(fig, "map_01_position.png")
 
 # --- 02. Муниципальная реформа: карта статусов ---------------------------------------------
@@ -129,8 +141,12 @@ ax.annotate("Горно-Алтайск\n(городской округ)", (gac.x
             fontsize=7.5, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
 ax.set_axis_off()
 ax.set_title("Муниципальные округа вместо районов: статус на 28.10.2026", loc="left", color=INK, fontsize=11)
-ax.legend(handles=[Patch(color=STYLE[k], label=k) for k in list(STYLE)[:3]], loc="lower left", frameon=False,
-          fontsize=8)
+ax.legend(handles=[Patch(color=STYLE[k], label=k) for k in STYLE] +
+                  [Line2D([], [], color=SURFACE, lw=0, label="подпись: район и закон о статусе округа")],
+          loc="lower left", frameon=False, fontsize=8, title="Условные обозначения", title_fontsize=8,
+          alignment="left")
+scale_bar(ax, loc=(0.04, 0.93))
+north_arrow(ax, loc=(0.95, 0.86))
 save(fig, "map_02_reform_status.png")
 
 # --- 02. Хронология реформы ----------------------------------------------------------------
@@ -233,8 +249,16 @@ share_t = {t: V[f"Жителей РА в {t} мин от Горно-Алтайс
 ax.legend(handles=[Patch(color=iso_col[30], label=f"до 30 мин — {share_t[30]:.0f} % жителей РА"),
                    Patch(color=iso_col[60], label=f"30–60 мин (всего до 60 мин — {share_t[60]:.0f} %)"),
                    Patch(color=iso_col[90], label=f"60–90 мин (всего до 90 мин — {share_t[90]:.0f} %)"),
-                   Line2D([], [], color=INK, lw=1.4, label="Горно-Алтайск + Майминский район")],
-          loc="lower right", frameon=True, facecolor=SURFACE, edgecolor="none", fontsize=8)
+                   Line2D([], [], color=INK, lw=1.4, label="Горно-Алтайск + Майминский район"),
+                   Line2D([], [], color=NODATA, lw=0.8, label="границы муниципальных образований"),
+                   Line2D([], [], color=RAMP[3], lw=1.8, label="Р-256 «Чуйский тракт»"),
+                   Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали"),
+                   Line2D([], [], marker="o", ls="", ms=5, color=INK, label="населённые пункты от 1 000 жителей\n(размер — население)"),
+                   Patch(color=RU_FILL, label="Алтайский край")],
+          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, fontsize=7.5,
+          title="Условные обозначения", title_fontsize=8, alignment="left")
+scale_bar(ax, loc=(0.66, 0.93), frac=0.3)
+north_arrow(ax, loc=(0.05, 0.84))
 save(fig, "map_03_agglomeration.png")
 
 # --- 03. Агломерация: три прогноза к 2035 г. ----------------------------------------------
