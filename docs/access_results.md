@@ -61,8 +61,8 @@
 | `provision_summary.csv` | Итог обеспеченности ObjectNat по сценариям |
 | `isochrones_gorno_altaysk_mountain.geojson` | Изохроны 30/60/90 мин от центра Горно-Алтайска (горный граф) |
 | `isochrones_hospitals_mountain.geojson` | Зоны 30/60 мин от 11 больниц |
-| `map_time_nearest_hospital.png` | Карта: время до ближайшей больницы |
-| `map_time_republican_hospital.png` | Карта: время до Республиканской больницы и изохроны |
+| `map_time_nearest_hospital.png` | Карта: время до ближайшей больницы. Подпись: «За 60 мин до больницы с койками доезжают 92,2 % жителей; дальше 60 мин — 16 479 чел.» |
+| `map_time_republican_hospital.png` | Карта: время до Республиканской больницы и изохроны. Подпись: «За 120 мин до Республиканской больницы доезжают 56,8 % жителей» |
 | `chart_access_share_by_mo.png` | Доля жителей в нормативе по МО |
 
 Граф (`*.urbangraph`, 12 МБ каждый), тайлы рельефа (1,3 ГБ) и OD-матрицы остаются в `results/`, в репозиторий не входят. Их воссоздаёт повторный прогон блокнота.
@@ -114,5 +114,5 @@
 | `scenario_interdistrict_center.csv` | Все варианты с одним и двумя центрами |
 | `scenario_interdistrict_sensitivity.csv` | Лучшие варианты при пороге 102 / 120 / 138 мин |
 | `scenario_new_points_60min.csv` | Жадный подбор новых точек уровня А |
-| `map_scenario_interdistrict_center.png` | Карта: сейчас и с центрами в Кош-Агаче и Усть-Кане. **Старое оформление** (без линейки и стрелки севера): нужна OD-матрица из `results/`, перерисуется при следующем прогоне `scenario_south_center.py` |
+| `map_scenario_interdistrict_center.png` | Карта: сейчас и с центрами в Кош-Агаче и Усть-Кане. **Старое оформление, для слайдов не использовать.** Скрипт теперь рисует две карты в едином макете — `map_scenario_center_now.png` и `map_scenario_center_two.png`; они появятся при следующем прогоне `scenario_south_center.py` с OD-матрицей из `results/` |
 | `chart_scenario_interdistrict_center.png` | Доля жителей в 120 мин по вариантам |

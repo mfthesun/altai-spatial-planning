@@ -27,7 +27,7 @@ CRS = 32645  # UTM 45N для отрисовки
 FROM_RESULTS = (RES / "time_to_hospital_flat_vs_mountain.geojson").exists()
 SRC = RES if FROM_RESULTS else OUT
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import north_arrow, scale_bar  # noqa: E402
+from maptools import finish, map_figure, save_map  # noqa: E402
 
 # ординальная шкала времени, светлое → тёмное (проверена validate_palette.js --ordinal)
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
@@ -76,12 +76,15 @@ else:  # пересобираем только карты: таблицы счи
 
 
 # --- карты -------------------------------------------------------------------------------
-def base(ax, title):
+def base(ax):
     border.boundary.plot(ax=ax, color=MUTED, lw=0.8)
     if edges is not None:
         edges.plot(ax=ax, color="#b9b8b1", lw=0.5, zorder=1)
-    ax.set_title(title, loc="left", color=INK, fontsize=11)
-    ax.set_axis_off()
+
+
+SIZE_NOTE = Line2D([], [], color=SURFACE, lw=0, label="размер кружка — число жителей")
+bx0, by0, bx1, by1 = border.total_bounds
+EXTENT = (bx0 - 15000, by0 - 15000, bx1 + 15000, by1 + 15000)
 
 
 def points(ax, col, bins, labels):
@@ -98,40 +101,33 @@ def save(fig, name):
 
 
 # 1. до ближайшей больницы (сценарий А, горный граф)
-fig, ax = plt.subplots(figsize=(7.5, 8))
-base(ax, "Время до ближайшей больницы с койками, мин (с поправкой на рельеф)")
+fig, ax = map_figure()
+base(ax)
 iso_h[iso_h["dist"] == iso_h["dist"].max()].boundary.plot(ax=ax, color=INK, lw=0.6, ls="--", zorder=2)
 h = points(ax, "tmin_mount_A", [-1, 30, 60, 90, 120, 1e6], ["до 30", "30–60", "60–90", "90–120", "больше 120"])
 ax.scatter(hosp.geometry.x, hosp.geometry.y, marker="P", s=60, c=INK, edgecolor=SURFACE, zorder=4)
-r = mo_tab.iloc[-1]
-ax.text(0.01, 0.01, f"За 60 мин доезжают {r.A60_share_mountain:.1f} % жителей; вне зоны — {r.A60_pop_outside:,} чел.".replace(",", " "),
-        transform=ax.transAxes, color=INK)
-ax.legend(handles=h + [Line2D([], [], marker="P", ls="", c=INK, label="больница (11)"),
+finish(fig, ax, extent=EXTENT, handles=h + [SIZE_NOTE, Line2D([], [], marker="P", ls="", c=INK, label="больница (11)"),
                        Line2D([], [], color=INK, ls="--", lw=0.6, label="зона 60 мин"),
                        Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
                        Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
-          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, title="Условные обозначения\nнаселённые пункты, время в пути, мин:",
-          alignment="left")
-scale_bar(ax, loc=(0.04, 0.06))
-north_arrow(ax, loc=(0.95, 0.88))
-save(fig, "map_time_nearest_hospital.png")
+       title="Условные обозначения\nнаселённые пункты: время\nдо ближайшей больницы, мин", basemap_style="relief", basemap_alpha=0.5)
+save_map(fig, OUT / "map_time_nearest_hospital.png")
 
 # 2. до Республиканской больницы (сценарий Б)
-fig, ax = plt.subplots(figsize=(7.5, 8))
-base(ax, "Время до Республиканской больницы (Горно-Алтайск), мин")
+fig, ax = map_figure()
+base(ax)
 for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"]):
     iso_ga[iso_ga["dist"] == d].boundary.plot(ax=ax, color=INK, lw=0.6, ls=ls, zorder=2)
 h = points(ax, "tmin_mount_B", [-1, 60, 120, 180, 240, 1e6], ["до 60", "60–120", "120–180", "180–240", "больше 240"])
-ax.text(0.01, 0.01, f"За 120 мин доезжают {r.B120_share_mountain:.1f} % жителей", transform=ax.transAxes, color=INK)
-ax.legend(handles=h + [Line2D([], [], color=INK, ls=ls, lw=0.6, label=f"изохрона {int(d)} мин")
+rep_h = hosp[hosp["level"] == "республиканская"]
+ax.scatter(rep_h.geometry.x, rep_h.geometry.y, marker="P", s=80, c=INK, edgecolor=SURFACE, zorder=4)
+finish(fig, ax, extent=EXTENT, handles=h + [SIZE_NOTE] + [Line2D([], [], color=INK, ls=ls, lw=0.6, label=f"изохрона {int(d)} мин")
                        for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"])] +
-                      [Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
+                      [Line2D([], [], marker="P", ls="", c=INK, label="Республиканская больница"),
+                       Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
                        Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
-          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, title="Условные обозначения\nнаселённые пункты, время в пути, мин:",
-          alignment="left")
-scale_bar(ax, loc=(0.04, 0.06))
-north_arrow(ax, loc=(0.95, 0.88))
-save(fig, "map_time_republican_hospital.png")
+       title="Условные обозначения\nнаселённые пункты: время\nдо Республиканской больницы, мин", basemap_style="relief", basemap_alpha=0.5)
+save_map(fig, OUT / "map_time_republican_hospital.png")
 
 # 3. доля жителей в нормативе по МО
 m = mo_tab.iloc[:-1].sort_values("A60_share_mountain")
@@ -146,7 +142,6 @@ ax.set_yticks(list(y), m.mo.str.replace(" район", ""))
 ax.set_xlim(0, 108); ax.set_xlabel("% жителей МО")
 ax.spines[["top", "right"]].set_visible(False)
 ax.legend(frameon=False, loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2)
-ax.set_title("Доля жителей в пределах норматива РНГП (горный граф)", loc="left", color=INK, fontsize=11, pad=34)
 save(fig, "chart_access_share_by_mo.png")
 
 print(mo_tab.to_string(index=False))

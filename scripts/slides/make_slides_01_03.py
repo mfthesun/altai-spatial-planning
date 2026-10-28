@@ -18,7 +18,7 @@ from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import north_arrow, scale_bar  # noqa: E402
+from maptools import HALO, finish, map_figure, save_map  # noqa: E402
 OUT = ROOT / "data" / "slides"
 LAY = OUT / "layers"
 CRS = 32645  # UTM 45N для отрисовки
@@ -58,16 +58,28 @@ def save(fig, name):
     plt.close(fig)
 
 
+def veil_outside(ax, alpha=0.45):
+    """Светлая вуаль вне РА: подложка видна, но республика выделена."""
+    outside = gpd.GeoSeries([box(*border.buffer(600000).total_bounds).difference(border.union_all())], crs=CRS)
+    outside.plot(ax=ax, color=SURFACE, alpha=alpha, lw=0, zorder=1)
+
+
+countries = nb.dissolve("admin").boundary  # государственные границы
+regions = nb.boundary                       # границы субъектов и провинций
+
+
 def label(ax, pt, text, dx=6000, dy=6000, **kw):
     ax.annotate(text, (pt.x, pt.y), xytext=(pt.x + dx, pt.y + dy), color=kw.pop("color", INK),
-                fontsize=kw.pop("fontsize", 8), **kw)
+                fontsize=kw.pop("fontsize", 8), path_effects=HALO, **kw)
 
 
 # --- 01. Положение и коридоры --------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(8, 8))
-nb.plot(ax=ax, color=[RU_FILL if a == "Russia" else FOREIGN_FILL for a in nb.admin], edgecolor=SURFACE, lw=1.2)
-mo.plot(ax=ax, color="#ffffff", edgecolor=NODATA, lw=0.5)
-border.boundary.plot(ax=ax, color=INK, lw=1.2)
+fig, ax = map_figure()
+veil_outside(ax)
+regions.plot(ax=ax, color=MUTED, lw=0.5, ls="--", zorder=2)
+countries.plot(ax=ax, color=INK, lw=1.0, ls="-.", zorder=2)
+mo.boundary.plot(ax=ax, color=MUTED, lw=0.5, zorder=2)
+border.boundary.plot(ax=ax, color=INK, lw=1.4, zorder=3)
 roads[~roads.index.isin(r256.index)].plot(ax=ax, color="#9b9a94", lw=0.6)
 r256.plot(ax=ax, color=RAMP[3], lw=2.2)
 ax.scatter(centers.geometry.x, centers.geometry.y, s=14, color=INK, edgecolor=SURFACE, lw=0.8, zorder=4)
@@ -99,25 +111,18 @@ for country, ru_name, (dx, dy) in [("Kazakhstan", "КАЗАХСТАН", (0, 0)),
     if not g.is_empty:
         c = g.representative_point()
         ax.annotate(ru_name, (c.x + dx, c.y + dy), color=MUTED, fontsize=9, ha="center", fontweight="bold")
-ax.set_xlim(view.bounds[0], view.bounds[2])
-ax.set_ylim(view.bounds[1], view.bounds[3])
-ax.set_axis_off()
-ax.set_title("Республика Алтай: соседи и выходы за пределы республики", loc="left", color=INK, fontsize=11)
-ax.legend(handles=[Line2D([], [], color=RAMP[3], lw=2.2, label="Р-256 «Чуйский тракт»"),
-                   Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали (OSM trunk/primary)"),
+finish(fig, ax, extent=view.bounds, handles=[Line2D([], [], color=RAMP[3], lw=2.2, label="Р-256 «Чуйский тракт»"),
+                   Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистральные и основные дороги"),
                    Line2D([], [], marker="o", ls="", ms=7, color=INK, label="Горно-Алтайск"),
                    Line2D([], [], marker="o", ls="", ms=4, color=INK, label="районные центры"),
                    Line2D([], [], marker="o", ls="", ms=4, color=MUTED, label="города за пределами РА"),
                    Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=RAMP[3], label="внешние выходы"),
                    Line2D([], [], color=INK, lw=1.2, label="граница Республики Алтай"),
-                   Line2D([], [], color=NODATA, lw=0.8, label="границы муниципальных образований"),
-                   Patch(color=RU_FILL, label="другие регионы России"),
-                   Patch(color=FOREIGN_FILL, label="другие государства")],
-          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, fontsize=7.5,
-          title="Условные обозначения", title_fontsize=8, alignment="left")
-scale_bar(ax, loc=(0.04, 0.03))
-north_arrow(ax, loc=(0.95, 0.88))
-save(fig, "map_01_position.png")
+                   Line2D([], [], color=MUTED, lw=0.5, label="границы муниципальных образований"),
+                   Line2D([], [], color=MUTED, lw=0.5, ls="--", label="границы регионов"),
+                   Line2D([], [], color=INK, lw=1.0, ls="-.", label="государственная граница")],
+       basemap_style="relief")
+save_map(fig, OUT / "map_01_position.png")
 
 # --- 02. Муниципальная реформа: карта статусов ---------------------------------------------
 ref = csv("data/slides/reform_status.csv")
@@ -125,8 +130,9 @@ ref["oktmo"] = ref["oktmo"].astype(str)
 m = mo.merge(ref, on="oktmo", suffixes=("", "_r"))
 STYLE = {"муниципальный округ с 01.01.2026": RAMP[3], "муниципальный округ с 01.01.2027": RAMP[1],
          "закон о статусе не найден": NODATA, "городской округ": INK}
-fig, ax = plt.subplots(figsize=(7.5, 7.5))
-m.plot(ax=ax, color=[STYLE[s] for s in m.status], edgecolor=SURFACE, lw=1.5)
+fig, ax = map_figure()
+veil_outside(ax, alpha=0.55)
+m.plot(ax=ax, color=[STYLE[s] for s in m.status], alpha=0.72, edgecolor=SURFACE, lw=1.5)
 for _, r in m.iterrows():
     if r.oktmo == "84701000":
         continue
@@ -139,15 +145,12 @@ for _, r in m.iterrows():
 gac = m[m.oktmo == "84701000"].geometry.iloc[0].centroid
 ax.annotate("Горно-Алтайск\n(городской округ)", (gac.x, gac.y), xytext=(gac.x - 95000, gac.y + 25000),
             fontsize=7.5, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
-ax.set_axis_off()
-ax.set_title("Муниципальные округа вместо районов: статус на 28.10.2026", loc="left", color=INK, fontsize=11)
-ax.legend(handles=[Patch(color=STYLE[k], label=k) for k in STYLE] +
-                  [Line2D([], [], color=SURFACE, lw=0, label="подпись: район и закон о статусе округа")],
-          loc="lower left", frameon=False, fontsize=8, title="Условные обозначения", title_fontsize=8,
-          alignment="left")
-scale_bar(ax, loc=(0.04, 0.93))
-north_arrow(ax, loc=(0.95, 0.86))
-save(fig, "map_02_reform_status.png")
+bx0, by0, bx1, by1 = m.total_bounds
+finish(fig, ax, extent=(bx0 - 20000, by0 - 30000, bx1 + 20000, by1 + 20000),
+       handles=[Patch(color=STYLE[k], alpha=0.72, label=k) for k in STYLE] +
+               [Line2D([], [], color=SURFACE, lw=0, label="подпись: район и закон\nо статусе округа")],
+       title="Условные обозначения\nстатус на 28.10.2026:", basemap_style="relief")
+save_map(fig, OUT / "map_02_reform_status.png")
 
 # --- 02. Хронология реформы ----------------------------------------------------------------
 EVENTS = [  # дата, подпись, ярус подписи (для разведения), тип: law — закон принят, force — вступление в силу, term — срок
@@ -182,7 +185,6 @@ for s in ("left", "right", "top"):
     ax.spines[s].set_visible(False)
 ax.spines["bottom"].set_visible(False)
 ax.set_yticks([])
-ax.set_title("Муниципальная реформа Республики Алтай: законы и сроки", loc="left", color=INK, fontsize=11)
 ax.legend(handles=[Line2D([], [], marker="o", ls="", mfc=SURFACE, mec=RAMP[3], label="закон принят"),
                    Line2D([], [], marker="o", ls="", color=RAMP[3], label="вступление в силу"),
                    Line2D([], [], marker="s", ls="", mfc=SURFACE, mec=INK, label="срок по закону")],
@@ -224,13 +226,14 @@ V = dict(rows)
 # --- 03. Агломерация: карта изохрон -------------------------------------------------------
 iso = gpd.read_file(ROOT / "data" / "access_results" / "isochrones_gorno_altaysk_mountain.geojson").to_crs(CRS)
 iso = iso[iso["dist"] > 0].sort_values("dist", ascending=False)
-fig, ax = plt.subplots(figsize=(7.5, 7))
-nb[nb.admin == "Russia"].plot(ax=ax, color=RU_FILL, edgecolor=SURFACE, lw=1)
-mo.plot(ax=ax, color="#ffffff", edgecolor=NODATA, lw=0.6)
+fig, ax = map_figure()
+veil_outside(ax, alpha=0.35)
+regions.plot(ax=ax, color=MUTED, lw=0.6, ls="--", zorder=2)
+mo.boundary.plot(ax=ax, color=MUTED, lw=0.6, zorder=2)
 # ступенчатые изохроны ObjectNat — непересекающиеся кольца: 0–30, 30–60, 60–90 мин (dist — верхняя граница)
-iso_col = {30: "#e9a17a", 60: "#f3c6a8", 90: "#f9e3d3"}
+iso_col = {30: "#c9561f", 60: "#e98a4e", 90: "#f4bb8f"}  # поверх подложки, alpha 0.7
 for _, r in iso.iterrows():
-    gpd.GeoSeries([r.geometry], crs=CRS).plot(ax=ax, color=iso_col[int(r["dist"])], lw=0)
+    gpd.GeoSeries([r.geometry], crs=CRS).plot(ax=ax, color=iso_col[int(r["dist"])], alpha=0.7, lw=0, zorder=1.5)
 mo[mo.oktmo.isin(["84701000", "84615000"])].boundary.plot(ax=ax, color=INK, lw=1.4)
 roads.plot(ax=ax, color="#9b9a94", lw=0.6)
 r256.plot(ax=ax, color=RAMP[3], lw=1.8)
@@ -241,25 +244,18 @@ for n in ["г. Горно-Алтайск", "село Майма", "село Че
     r = st[st.object_name.eq(n) | st.settlement.eq(n)]
     if len(r):
         label(ax, r.geometry.iloc[0], n.replace("село ", "").replace("г. ", ""), dx=4000, dy=2500, fontsize=7.5)
-ax.set_xlim(ga.x - 110000, ga.x + 110000)
-ax.set_ylim(ga.y - 130000, ga.y + 70000)
-ax.set_axis_off()
-ax.set_title("Горно-Алтайская агломерация: время в пути от Горно-Алтайска", loc="left", color=INK, fontsize=11)
 share_t = {t: V[f"Жителей РА в {t} мин от Горно-Алтайска (горный граф), %"] for t in (30, 60, 90)}
-ax.legend(handles=[Patch(color=iso_col[30], label=f"до 30 мин — {share_t[30]:.0f} % жителей РА"),
-                   Patch(color=iso_col[60], label=f"30–60 мин (всего до 60 мин — {share_t[60]:.0f} %)"),
-                   Patch(color=iso_col[90], label=f"60–90 мин (всего до 90 мин — {share_t[90]:.0f} %)"),
+finish(fig, ax, extent=(ga.x - 110000, ga.y - 130000, ga.x + 110000, ga.y + 70000), handles=[Patch(color=iso_col[30], alpha=0.7, label=f"до 30 мин — {share_t[30]:.0f} % жителей РА"),
+                   Patch(color=iso_col[60], alpha=0.7, label=f"30–60 мин (всего до 60 мин — {share_t[60]:.0f} %)"),
+                   Patch(color=iso_col[90], alpha=0.7, label=f"60–90 мин (всего до 90 мин — {share_t[90]:.0f} %)"),
                    Line2D([], [], color=INK, lw=1.4, label="Горно-Алтайск + Майминский район"),
-                   Line2D([], [], color=NODATA, lw=0.8, label="границы муниципальных образований"),
+                   Line2D([], [], color=MUTED, lw=0.6, label="границы муниципальных образований"),
                    Line2D([], [], color=RAMP[3], lw=1.8, label="Р-256 «Чуйский тракт»"),
                    Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали"),
                    Line2D([], [], marker="o", ls="", ms=5, color=INK, label="населённые пункты от 1 000 жителей\n(размер — население)"),
-                   Patch(color=RU_FILL, label="Алтайский край")],
-          loc="upper left", bbox_to_anchor=(1.01, 1), frameon=False, fontsize=7.5,
-          title="Условные обозначения", title_fontsize=8, alignment="left")
-scale_bar(ax, loc=(0.66, 0.93), frac=0.3)
-north_arrow(ax, loc=(0.05, 0.84))
-save(fig, "map_03_agglomeration.png")
+                   Line2D([], [], color=MUTED, lw=0.6, ls="--", label="граница с Алтайским краем")],
+       title="Условные обозначения\nвремя в пути от Горно-Алтайска:", basemap_style="relief")
+save_map(fig, OUT / "map_03_agglomeration.png")
 
 # --- 03. Агломерация: три прогноза к 2035 г. ----------------------------------------------
 # источники: СТП Том 1 (122,6 тыс., документы терпланирования МО); мастер-план Горно-Алтайска 2025
@@ -280,5 +276,4 @@ ax.set_axisbelow(True)
 for sp in ("top", "right", "left"):
     ax.spines[sp].set_visible(False)
 ax.tick_params(left=False)
-ax.set_title("Агломерация к 2035 г.: прогнозы документов против тренда", loc="left", color=INK, fontsize=11)
 save(fig, "chart_03_agglomeration_forecasts.png")
