@@ -24,6 +24,7 @@ f1 = csv('data/stp_extracted/chs/flood_zone_settlements_1.csv')
 f2 = csv('data/stp_extracted/chs/flood_zone_settlements_2.csv')
 fh = csv('data/stp_extracted/chs/flood_history.csv')
 cal = csv('relief/calibration_pairs.csv')
+acc = csv('data/access_results/access_by_mo.csv').set_index('mo')
 rows = lambda d: d[pd.to_numeric(d.iloc[:, 0], errors='coerce').notna()]  # строки таблицы с порядковым номером
 
 pop = mo['Население 1.01.2025, чел.']
@@ -44,6 +45,11 @@ CHECKS = [
     ('03', 'маршрутов калибровки', len(cal), 11, 0),
     ('03', 'ГА → Кош-Агач, мин', cal.loc[0, 'ref_min'], 369, 0),
     ('03', 'ГА → Кош-Агач, км', cal.loc[0, 'ref_km'], 452, 0),
+    ('03', 'доступность: жителей ≤ 60 мин до больницы (горный граф), %', acc.loc['Республика Алтай', 'A60_share_mountain'], 92.2, 0.05),
+    ('03', 'доступность: то же без поправки на рельеф, %', acc.loc['Республика Алтай', 'A60_share_flat'], 94.7, 0.05),
+    ('03', 'доступность: жителей дальше 60 мин', acc.loc['Республика Алтай', 'A60_pop_outside'], 16479, 0),
+    ('03', 'доступность: жителей ≤ 120 мин до Республиканской, %', acc.loc['Республика Алтай', 'B120_share_mountain'], 56.8, 0.05),
+    ('03', 'доступность: Улаганский ≤ 60 мин, %', acc.loc['Улаганский район', 'A60_share_mountain'], 66.4, 0.05),
     ('03', 'сёл с разрывом связи (табл. 1.6), строк с номером', rows(f2).shape[0], 36, 0),
     ('03', 'население с разрывом связи, сумма строк', rows(f2)['Количество населения'].astype(float).sum(), 12061, 0),
     ('03', 'население с разрывом связи, строка «Итого»', float(f2.iloc[-1]['Количество населения']), 12061, 0),

@@ -1,0 +1,5 @@
+graph,scenario,threshold,pop_within_share,provision_mean,settl_outside
+flat,A,60,94.7,0.832,40
+flat,B,120,58.6,0.586,164
+mountain,A,60,92.2,0.828,56
+mountain,B,120,56.8,0.568,173

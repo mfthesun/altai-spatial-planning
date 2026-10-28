@@ -10,7 +10,8 @@
 ## С чего начать
 - Предметный контекст: `docs/altai_context.md`; конспект СТП: `docs/altai_stp_2026.md`.
 - Данные: `data/dataset_v3/` (по МО и НП). Каталог и оговорки: `docs/data_catalog.md`, `docs/validation_report.md`.
-- Доступность больниц: слои в `data/access_inputs/`, метод в `docs/access_inputs.md` и `docs/relief_method.md`.
+- Доступность больниц: слои в `data/access_inputs/`, метод в `docs/access_inputs.md` и `docs/relief_method.md`, результаты в `data/access_results/` и `docs/access_results.md`.
+- Overpass: `overpass-api.de` из облака обрывает соединение; работает зеркало `OVERPASS_URL=https://maps.mail.ru/osm/tools/overpass/api/interpreter`.
 
 ## Договорённости
 - ОКТМО МО: 84610000 Кош-Агач … 84701000 Горно-Алтайск. Новые коды Турочака (84525000) и Чои (84545000) переназначаются на старые.
@@ -22,5 +23,4 @@
 - Есть исходный текст СТП (docx): цитаты и числа брать из него (data/stp_extracted/), не из OCR скана.
 
 ## Открытые задачи
-- Прогнать `relief/altai_access_mountain.ipynb` в Colab.
-- Карты доступности и обеспеченности для глав «Каркасы» и «Мероприятия».
+- Карты доступности для глав «Каркасы» и «Мероприятия»: базовые карты готовы (`data/access_results/`); нужны варианты с новыми межрайонными центрами.
