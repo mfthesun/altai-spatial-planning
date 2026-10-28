@@ -90,10 +90,10 @@ from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Patch  # noqa: E402
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import finish, map_figure, save_map  # noqa: E402
+from maptools import finish, map_figure, no_yo, save_map  # noqa: E402
 
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
-INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
+INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "figure.facecolor": SURFACE, "axes.facecolor": SURFACE})
 CRS = 32645
 border = gpd.read_file(INP / "altai_boundary.geojson").to_crs(CRS)
@@ -134,5 +134,6 @@ ax.set_yticks(y, lab)
 ax.set_xlim(0, 105)
 ax.set_xlabel("% жителей республики в 120 мин от многопрофильной больницы")
 ax.spines[["top", "right"]].set_visible(False)
+no_yo(fig)
 fig.savefig(OUT / "chart_scenario_interdistrict_center.png", dpi=200, bbox_inches="tight")
 plt.close(fig)

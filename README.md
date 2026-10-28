@@ -6,6 +6,8 @@
 
 **Репозиторий открыт: подключиться может любой участник — см. [CONTRIBUTING.md](CONTRIBUTING.md). Задачи команды — в [Issues](https://github.com/mfthesun/altai-spatial-planning/issues).**
 
+**Презентация (Figma Slides): [https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso](https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso)** — общая рабочая копия, слайды заполняет каждый участник по своему разделу.
+
 [![Открыть в Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mfthesun/altai-spatial-planning) [![Открыть блокнот в Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mfthesun/altai-spatial-planning/blob/main/relief/altai_access_mountain.ipynb) Методика курса: диагностика → SWOT → доктрина → ТЭЗ → каркасы и узлы → мероприятия → флагманские проекты.
 
 ## Структура
@@ -59,14 +61,14 @@ python scripts/model/build_axes.py             # вторые оси модел�
 | Роль | Участник | GitHub |
 |---|---|---|
 | Глава региона, руководитель | Денис Яковлев | [mfthesun](https://github.com/mfthesun) |
-| Расселение и социокультурные факторы | Арина К. | [Arishka711](https://github.com/Arishka711) |
-| Экономика и хозяйственная деятельность | Мария Н. | [marusyayaaa](https://github.com/marusyayaaa) |
-| Транспорт и мобильность | Наталия С. | [gadunts](https://github.com/gadunts) |
-| Природные ресурсы и экология | Владислав Р. | [rengach-vlad](https://github.com/rengach-vlad) |
+| Расселение и социокультурные факторы | Арина Комарова | [Arishka711](https://github.com/Arishka711) |
+| Экономика и хозяйственная деятельность | Мария Непомнящая | [marusyayaaa](https://github.com/marusyayaaa) |
+| Транспорт и мобильность | Наталия Саркисова | [gadunts](https://github.com/gadunts) |
+| Природные ресурсы и экология | Владислав Ренгач | [rengach-vlad](https://github.com/rengach-vlad) |
 | Жильё, ЖКХ, комфортная среда | Александра Я. | [alexandra008-commits](https://github.com/alexandra008-commits) |
-| Историко-культурное наследие | Виктор Ц. | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
+| Историко-культурное наследие | Виктор Цыганов | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
 
-Презентация собирается в Figma Slides.
+Презентация собирается в Figma Slides: [https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso](https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso).
 
 ## Статус
 - [x] Сводный датасет v3 (население 1.01.2025, зарплаты 2025, миграция, МСП, жильё и др.)

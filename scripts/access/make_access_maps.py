@@ -31,7 +31,7 @@ from maptools import finish, map_figure, save_map  # noqa: E402
 
 # ординальная шкала времени, светлое → тёмное (проверена validate_palette.js --ordinal)
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
-INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
+INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.edgecolor": MUTED,
                      "figure.facecolor": SURFACE, "axes.facecolor": SURFACE})
 

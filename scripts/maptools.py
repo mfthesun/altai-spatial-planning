@@ -16,6 +16,7 @@
 отклоняется от истинного севера на 1–2° на краях республики (центральный меридиан 87° в. д.).
 """
 import math
+import re
 import textwrap
 
 import contextily as cx
@@ -33,7 +34,7 @@ NORTH_LOC = (0.955, 0.875)            # основание стрелки сев
 SCALE_LOC = (0.035, 0.035)            # левый нижний угол линейки, доли поля карты
 SCALE_FRAC = 0.25                     # длина линейки — около четверти ширины поля
 NICE_KM = [2, 4, 10, 20, 50, 100, 200, 400]  # середина линейки (половина длины) — целое число км
-INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
+INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
 HALO = [pe.withStroke(linewidth=2.5, foreground=SURFACE)]
 TITLE_WRAP, LABEL_WRAP = 34, 34       # символов в строке колонки условных обозначений
 ATTR_LOC = (0.995, 0.006)             # правый нижний угол поля карты: атрибуция подложки
@@ -47,8 +48,14 @@ BASEMAPS = {  # стиль: (источник тайлов, атрибуция �
 }
 
 
+SHORT = re.compile(r"(?<![\w-])([\w№]{1,2}) ")  # слово короче трёх букв не остаётся в конце строки
+NUM = re.compile(r"(\d) (?=[^\s—–])")  # число не отрывается от следующего слова или единицы
+
+
 def _wrap(text, width):
-    return "\n".join(textwrap.fill(line, width) for line in text.split("\n"))
+    """Перенос по словам; после коротких слов — неразрывный пробел, «—» не начинает строку."""
+    lines = (NUM.sub("\\1\u00a0", SHORT.sub("\\1\u00a0", line)).replace(" —", "\u00a0—") for line in text.split("\n"))
+    return "\n".join(textwrap.fill(line, width) for line in lines)
 
 
 def map_figure():
@@ -136,7 +143,16 @@ def finish(fig, ax, extent, handles, title="Условные обозначен�
                title=_wrap(title, TITLE_WRAP), title_fontsize=9, alignment="left", labelspacing=0.7, handlelength=2.2)
 
 
+def no_yo(fig):
+    """В презентации пишем «е» вместо «ё» — во всех надписях рисунка, включая легенду."""
+    for t in fig.findobj(lambda a: hasattr(a, "get_text") and hasattr(a, "set_text")):
+        s = t.get_text()
+        if "ё" in s or "Ё" in s:
+            t.set_text(s.replace("ё", "е").replace("Ё", "Е"))
+
+
 def save_map(fig, path):
     """Без обрезки по содержимому: все карты одного размера, оформление на одних местах."""
+    no_yo(fig)
     fig.savefig(path, dpi=DPI)
     plt.close(fig)
