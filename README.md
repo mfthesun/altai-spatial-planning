@@ -65,7 +65,7 @@ python scripts/model/build_axes.py             # вторые оси модел�
 | Экономика и хозяйственная деятельность | Мария Непомнящая | [marusyayaaa](https://github.com/marusyayaaa) |
 | Транспорт и мобильность | Наталия Саркисова | [gadunts](https://github.com/gadunts) |
 | Природные ресурсы и экология | Владислав Ренгач | [rengach-vlad](https://github.com/rengach-vlad) |
-| Жильё, ЖКХ, комфортная среда | Александра Я. | [alexandra008-commits](https://github.com/alexandra008-commits) |
+| Жильё, ЖКХ, комфортная среда | Александра Яцуба | [alexandra008-commits](https://github.com/alexandra008-commits) |
 | Историко-культурное наследие | Виктор Цыганов | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
 
 Презентация собирается в Figma Slides: [https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso](https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso).
