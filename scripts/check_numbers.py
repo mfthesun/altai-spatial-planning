@@ -32,8 +32,9 @@ reform = csv('data/slides/reform_status.csv')
 oopt = csv('data/oopt/oopt_oczk_2026-10-28.csv')
 oopt = oopt[~oopt['Название'].astype(str).str.startswith('Итого')]
 oopt_ha = pd.to_numeric(oopt['Площадь, га'])
-OOPT_MAP = ['Алтайский', 'Катунский', 'Сайлюгемский', 'Зона покоя Укок', 'Ак Чолушпа', 'Уч Энмек', 'Белуха',
-            'Сумультинский', 'Шавлинский', 'Телецкое озеро']  # ООПТ на карте модели (scripts/model/build_model_layers.py)
+import geopandas as gpd  # noqa: E402
+oopt_g = gpd.read_file(R / 'data/oopt/oopt_oczk_2026-10-28.geojson').to_crs(32645)
+oopt_share = lambda m: 100 * oopt_g[m].geometry.union_all().area / 1e4 / (area.sum() * 100)  # без наложений, от площади РА
 rows = lambda d: d[pd.to_numeric(d.iloc[:, 0], errors='coerce').notna()]  # строки таблицы с порядковым номером
 
 pop = mo['Население 1.01.2025, чел.']
@@ -107,8 +108,11 @@ CHECKS = [
     ('08', 'ООПТ по карте ООПТ России, объектов', len(oopt), 55, 0),
     ('08', 'ООПТ, площадь, млн га', oopt_ha.sum() / 1e6, 2.30, 0.005),
     ('08', 'ООПТ федеральные, % площади РА', 100 * oopt_ha[oopt['Значение'] == 'Федеральное'].sum() / (area.sum() * 100), 12.28, 0.005),
-    ('08', 'ООПТ на карте модели, % площади ООПТ', 100 * oopt_ha[oopt['Название'].isin(OOPT_MAP)].sum() / oopt_ha.sum(), 97.6, 0.05),
-    ('08', 'Турочакский памятник природы, тыс. га', oopt_ha[oopt['Название'] == 'Турочакский'].iloc[0] / 1000, 36.8, 0.05),
+    ('08', 'ООПТ: контуров в официальном слое', len(oopt_g), 55, 0),
+    ('08', 'ООПТ без наложений, % площади РА', oopt_share(oopt_g.index == oopt_g.index), 24.7, 0.05),
+    ('08', 'ООПТ федеральные без наложений, % площади РА', oopt_share(oopt_g.level == 'Федеральное'), 12.3, 0.05),
+    ('08', 'ООПТ региональные без наложений, % площади РА', oopt_share(oopt_g.level == 'Региональное'), 12.5, 0.05),
+    ('08', 'ООПТ от 1 000 га на карте модели', (oopt_g.area_ha >= 1000).sum(), 13, 0),
 ]
 
 if '--control' in sys.argv:          # контроль: заявляем 38 кандидатов вместо 37 — проверка обязана упасть

@@ -1,9 +1,9 @@
 """Схема пространственной модели (задача 08, черновик к командной сессии).
 
 Зоны ТЭЗ (гипотеза из docs/altai_context.md, разд. 6, по границам МО), узлы четырёх уровней,
-опорные оси, внешние выходы и природный каркас (крупные ООПТ, объект ЮНЕСКО).
+опорные оси, внешние выходы и природный каркас (55 ООПТ по официальным контурам, объект ЮНЕСКО).
 Историко-культурный каркас добавится после выгрузки ЕГРОКН.
-Читает data/slides/layers/, data/model/layers/oopt_main.geojson, data/onp_candidates.csv,
+Читает data/slides/layers/, data/oopt/oopt_oczk_2026-10-28.geojson, data/model/layers/, data/onp_candidates.csv,
 data/dataset_v3/settlements.csv. Пишет data/model/map_model_draft.png.
 Запуск из корня репозитория: python scripts/model/make_model_map.py
 """
@@ -51,7 +51,9 @@ mo = gpd.read_file(LAY / "mo_boundaries.geojson").to_crs(CRS)
 border = gpd.read_file(ROOT / "data" / "access_inputs" / "altai_boundary.geojson").to_crs(CRS)
 roads = gpd.read_file(LAY / "roads_main.geojson").to_crs(CRS)
 kp = gpd.read_file(LAY / "key_points.geojson").to_crs(CRS).set_index("label")
-oopt = gpd.read_file(ROOT / "data" / "model" / "layers" / "oopt_main.geojson").to_crs(CRS)
+oopt = gpd.read_file(ROOT / "data" / "oopt" / "oopt_oczk_2026-10-28.geojson").to_crs(CRS)
+unesco = gpd.read_file(ROOT / "data" / "model" / "layers" / "unesco_golden_mountains.geojson").to_crs(CRS)
+SMALL_HA = 1000  # ООПТ меньше 1 000 га на масштабе республики не видны — рисуем значком
 st = csv("data/dataset_v3/settlements.csv")
 st = gpd.GeoDataFrame(st, geometry=gpd.points_from_xy(st.longitude, st.latitude), crs=4326).to_crs(CRS)
 pt = lambda name: st[st.settlement.eq(name) | st.object_name.eq(name)].geometry.iloc[0]
@@ -71,9 +73,10 @@ for name, (codes, col) in TEZ.items():
     mo[mo.oktmo.isin(codes)].dissolve().boundary.plot(ax=ax, color=col, lw=1.6, zorder=2.5)
 mo.boundary.plot(ax=ax, color=MUTED, lw=0.4, zorder=2)
 # природный каркас
-unesco = oopt[oopt.level == "ЮНЕСКО"]
-oo = oopt[oopt.level != "ЮНЕСКО"]
-oo.plot(ax=ax, facecolor="none", edgecolor="#2f6b3a", hatch="////", lw=0.8, zorder=2.2)
+big, small = oopt[oopt.area_ha >= SMALL_HA], oopt[oopt.area_ha < SMALL_HA]
+big.plot(ax=ax, facecolor="none", edgecolor="#2f6b3a", hatch="////", lw=0.8, zorder=2.2)
+sp = small.geometry.representative_point()
+ax.scatter(sp.x, sp.y, s=22, marker="^", color="#2f6b3a", edgecolor=SURFACE, lw=0.5, zorder=4.5)
 unesco.boundary.plot(ax=ax, color="#2f6b3a", lw=1.2, ls="--", zorder=2.3)
 border.boundary.plot(ax=ax, color=INK, lw=1.4, zorder=3)
 # опорный каркас: главная ось — Р-256 (Чуйский тракт), вторые оси
@@ -131,7 +134,8 @@ finish(fig, ax, extent=(x0 - 30000, y0 - 20000, x1 + 20000, y1 + 40000), basemap
                 Line2D([], [], color=INK, lw=1.8, label="вторая ось: Р-256, подъезд к Телецкому озеру (Майма — Артыбаш)"),
                 Line2D([], [], color=INK, lw=1.8, ls="--", label="вторые оси (схематично): Черга — Усть-Кан — Карагай, Акташ — Улаган"),
                 Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=INK, label="внешний выход"),
-                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label="крупные ООПТ (природный каркас)"),
+                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label=f"ООПТ от 1 000 га ({len(big)})"),
+                Line2D([], [], marker="^", ls="", ms=6, color="#2f6b3a", mec=SURFACE, label=f"ООПТ меньше 1 000 га ({len(small)})"),
                 Line2D([], [], color="#2f6b3a", lw=1.2, ls="--", label="объект ЮНЕСКО «Золотые горы Алтая»")])
 save_map(fig, OUT / "map_model_draft.png")
 print("ok")
