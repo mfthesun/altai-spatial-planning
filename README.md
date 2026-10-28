@@ -23,7 +23,8 @@
 | `relief/`, `docs/relief_method.md` | Поправка времени в пути на горный рельеф (Copernicus DEM GLO-30) и блокнот Colab: граф → OD-матрица → обеспеченность → изохроны |
 | `data/slides/`, `docs/slides_01-03.md`, `scripts/slides/` | Слайды 01–03 главы региона: карта положения, карта и хронология муниципальной реформы, карта и прогнозы агломерации; тексты с источниками |
 | `docs/doctrine_draft.md`, `data/model/`, `scripts/model/`, `data/oopt/` | Черновик доктрины (миссия, цели с индикаторами, принципы) и пространственной модели; карта модели; перечень ООПТ с карты ООПТ России |
-| `data/access_results/`, `docs/access_results.md` | Результаты расчёта доступности больниц: доли жителей в нормативе по МО, время по НП, изохроны, карты PNG |
+| `data/access_results/`, `docs/access_results.md` | Результаты расчёта доступности больниц: доли жителей в нормативе по МО, время по НП, изохроны, карты PNG, сценарии межрайонного центра |
+| `docs/access_services.md` | Доступность школ и первичной медпомощи (ФАП, амбулатории): нормативы РНГП РА, СП 42, приказов № 543н и № 132н, итоги по МО, сёла с дефицитом |
 | `data/stp_extracted/` | Из текста СТП (docx): реестр объектов культурного наследия по районам, таблицы природных рисков |
 | `data/onp_candidates.csv`, `docs/closed_tasks_2026-10-28.md` | Кандидаты в опорные населённые пункты; закрытые задачи: базовая характеристика, Стратегия 2035, энергобаланс, дороги, турпоток |
 | `data/raw/README.md` | Какие сырые архивы нужны и откуда их взять. Сами архивы в репозиторий не входят |
@@ -37,8 +38,13 @@ pip install -r requirements.txt
 # пересборка датасета — нужны сырые архивы в data/raw (см. data/raw/README.md):
 python scripts/dataset/build_dataset.py && python scripts/dataset/export.py
 python scripts/access/build_access_inputs.py
+python scripts/access/build_graph.py         # граф OSM + поправка на рельеф в results/ (без Colab; нужен OVERPASS_URL)
+python scripts/access/build_services_inputs.py   # школы и пункты первичной медпомощи из OSM
+python scripts/access/services_access.py       # доступность школ и ПМСП, OD-матрица больниц
 python scripts/access/make_access_maps.py   # карты и таблицы по results/ блокнота
 python scripts/access/scenario_south_center.py   # сценарии межрайонного центра и новых точек
+python scripts/access/make_services_maps.py    # карты доступности школ и ПМСП
+python scripts/model/build_axes.py             # вторые оси модели по дорогам графа
 ```
 
 Пути переопределяются переменными окружения:
@@ -74,6 +80,7 @@ python scripts/access/scenario_south_center.py   # сценарии межрай
 - [x] Прогон блокнота на реальном графе OSM, карты доступности больниц (`docs/access_results.md`)
 - [x] Материалы к слайдам 01–03 главы региона (`docs/slides_01-03.md`)
 - [x] Черновик доктрины и пространственной модели к командной сессии (`docs/doctrine_draft.md`)
+- [x] Доступность школ и первичной медпомощи (`docs/access_services.md`)
 - [ ] Слайды аналитиков, SWOT, ТЭЗ, доктрина, мероприятия, флагманы (Issues)
 
 ## Источники данных

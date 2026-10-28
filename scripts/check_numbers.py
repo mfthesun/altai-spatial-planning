@@ -34,6 +34,10 @@ oopt = oopt[~oopt['Название'].astype(str).str.startswith('Итого')]
 oopt_ha = pd.to_numeric(oopt['Площадь, га'])
 import geopandas as gpd  # noqa: E402
 oopt_g = gpd.read_file(R / 'data/oopt/oopt_oczk_2026-10-28.geojson').to_crs(32645)
+svc = csv('data/access_results/services_by_mo.csv').set_index('mo')
+svs = csv('data/access_results/services_by_settlement.csv')
+need = csv('data/access_results/services_need_543n.csv')
+axes = gpd.read_file(R / 'data/model/layers/axes_secondary.geojson').set_index('axis')
 oopt_share = lambda m: 100 * oopt_g[m].geometry.union_all().area / 1e4 / (area.sum() * 100)  # без наложений, от площади РА
 rows = lambda d: d[pd.to_numeric(d.iloc[:, 0], errors='coerce').notna()]  # строки таблицы с порядковым номером
 
@@ -113,6 +117,21 @@ CHECKS = [
     ('08', 'ООПТ федеральные без наложений, % площади РА', oopt_share(oopt_g.level == 'Федеральное'), 12.3, 0.05),
     ('08', 'ООПТ региональные без наложений, % площади РА', oopt_share(oopt_g.level == 'Региональное'), 12.5, 0.05),
     ('08', 'ООПТ от 1 000 га на карте модели', (oopt_g.area_ha >= 1000).sum(), 13, 0),
+    ('08', 'ось Черга — Усть-Кан — Усть-Кокса — Карагай, км', axes.loc['Черга — Усть-Кан — Усть-Кокса — Карагай', 'km'], 337, 0.5),
+    ('08', 'ось Черга — Карагай, ч', axes.loc['Черга — Усть-Кан — Усть-Кокса — Карагай', 'time_min'] / 60, 6.4, 0.05),
+    ('в', 'школа в своём селе, % жителей', svc.loc['Республика Алтай', 'school_in_village_share'], 83.1, 0.05),
+    ('в', 'школа в 15 км, % жителей', svc.loc['Республика Алтай', 'school_15km_share'], 96.1, 0.05),
+    ('в', 'школа в 30 км, % жителей', svc.loc['Республика Алтай', 'school_30km_share'], 99.7, 0.05),
+    ('в', 'дальше 15 км от школы, чел.', svc.loc['Республика Алтай', 'school_over15_pop'], 8094, 0),
+    ('в', 'дальше 15 км от школы, сёл', (svs.school_km > 15).sum(), 30, 0),
+    ('в', 'ПМСП в 30 мин, % жителей', svc.loc['Республика Алтай', 'pmsp_30min_share'], 98.4, 0.05),
+    ('в', 'ПМСП в 30 мин без медпунктов без названия, %', svc.loc['Республика Алтай', 'pmsp_30min_share_named'], 98.0, 0.05),
+    ('в', 'дальше 30 мин от ПМСП, чел.', svc.loc['Республика Алтай', 'pmsp_over30_pop'], 3385, 0),
+    ('в', 'дальше 30 мин от ПМСП, сёл', (svs.pmsp_min > 30).sum(), 23, 0),
+    ('в', 'по № 543н нужен ФАП, сёл', need.need_543n.str.startswith('нужен ФАП').sum(), 59, 0),
+    ('в', 'по № 543н нужна амбулатория, сёл', need.need_543n.str.startswith('нужна врачебная').sum(), 3, 0),
+    ('в', 'жители сёл с дефицитом по № 543н', svc.loc['Республика Алтай', 'need_543n_pop'], 30443, 0),
+    ('в', 'Кош-Агачский: ПМСП в 30 мин, %', svc.loc['Кош-Агачский район', 'pmsp_30min_share'], 90.7, 0.05),
 ]
 
 if '--control' in sys.argv:          # контроль: заявляем 38 кандидатов вместо 37 — проверка обязана упасть

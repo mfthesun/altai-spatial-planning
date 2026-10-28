@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-from shapely.geometry import LineString, box
+from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -85,10 +85,9 @@ tel = r256[r256.name.str.contains("Телецкий", na=False)]
 chuy = r256.drop(tel.index)
 chuy.plot(ax=ax, color=INK, lw=3.0, zorder=4)
 tel.plot(ax=ax, color=INK, lw=1.8, zorder=4)
-SECOND = [["село Черга", "село Усть-Кан", "село Усть-Кокса", "село Карагай"],  # широтная ось на запад (дорога в СТП до Казахстана)
-          ["село Акташ", "село Улаган"]]
-for chain in SECOND:
-    gpd.GeoSeries([LineString([pt(n) for n in chain])], crs=CRS).plot(ax=ax, color=INK, lw=1.8, ls="--", zorder=4)
+# вторые оси — по реальным дорогам: кратчайший путь на горном графе (scripts/model/build_axes.py)
+axes = gpd.read_file(ROOT / "data" / "model" / "layers" / "axes_secondary.geojson").to_crs(CRS)
+axes.plot(ax=ax, color=INK, lw=1.8, ls="--", zorder=4)
 # узлы
 ax.scatter(onp.geometry.x, onp.geometry.y, s=14, color=SURFACE, edgecolor=INK, lw=0.8, zorder=5)
 c = gpd.GeoSeries([pt(n) for n in centers if n not in INTER], crs=CRS)
@@ -132,7 +131,7 @@ finish(fig, ax, extent=(x0 - 30000, y0 - 20000, x1 + 20000, y1 + 40000), basemap
                 Line2D([], [], marker="P", ls="", ms=7, color="#b9472a", label="новая точка стационарной помощи (предложение)"),
                 Line2D([], [], color=INK, lw=3.0, label="главная ось: Р-256 «Чуйский тракт»"),
                 Line2D([], [], color=INK, lw=1.8, label="вторая ось: Р-256, подъезд к Телецкому озеру (Майма — Артыбаш)"),
-                Line2D([], [], color=INK, lw=1.8, ls="--", label="вторые оси (схематично): Черга — Усть-Кан — Карагай, Акташ — Улаган"),
+                Line2D([], [], color=INK, lw=1.8, ls="--", label="вторые оси по дорогам: Черга — Усть-Кан — Усть-Кокса — Карагай, Акташ — Улаган"),
                 Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=INK, label="внешний выход"),
                 Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label=f"ООПТ от 1 000 га ({len(big)})"),
                 Line2D([], [], marker="^", ls="", ms=6, color="#2f6b3a", mec=SURFACE, label=f"ООПТ меньше 1 000 га ({len(small)})"),
