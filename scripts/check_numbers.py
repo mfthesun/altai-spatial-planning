@@ -25,6 +25,8 @@ f2 = csv('data/stp_extracted/chs/flood_zone_settlements_2.csv')
 fh = csv('data/stp_extracted/chs/flood_history.csv')
 cal = csv('relief/calibration_pairs.csv')
 acc = csv('data/access_results/access_by_mo.csv').set_index('mo')
+sc = csv('data/access_results/scenario_interdistrict_center.csv').set_index('centers')
+np60 = csv('data/access_results/scenario_new_points_60min.csv').set_index('step')
 rows = lambda d: d[pd.to_numeric(d.iloc[:, 0], errors='coerce').notna()]  # строки таблицы с порядковым номером
 
 pop = mo['Население 1.01.2025, чел.']
@@ -50,6 +52,9 @@ CHECKS = [
     ('03', 'доступность: жителей дальше 60 мин', acc.loc['Республика Алтай', 'A60_pop_outside'], 16479, 0),
     ('03', 'доступность: жителей ≤ 120 мин до Республиканской, %', acc.loc['Республика Алтай', 'B120_share_mountain'], 56.8, 0.05),
     ('03', 'доступность: Улаганский ≤ 60 мин, %', acc.loc['Улаганский район', 'A60_share_mountain'], 66.4, 0.05),
+    ('08', 'сценарий: + центр в Усть-Кане, % в 120 мин', sc.loc['Усть-Канская РБ', 'share'], 71.5, 0.05),
+    ('08', 'сценарий: + Кош-Агач и Усть-Кан, % в 120 мин', sc.loc['Кош-Агачская РБ + Усть-Канская РБ', 'share'], 81.1, 0.05),
+    ('08', 'сценарий: 3 новые точки, жителей вне 60 мин', np60.loc[3, 'pop_outside'], 9849, 0),
     ('03', 'сёл с разрывом связи (табл. 1.6), строк с номером', rows(f2).shape[0], 36, 0),
     ('03', 'население с разрывом связи, сумма строк', rows(f2)['Количество населения'].astype(float).sum(), 12061, 0),
     ('03', 'население с разрывом связи, строка «Итого»', float(f2.iloc[-1]['Количество населения']), 12061, 0),

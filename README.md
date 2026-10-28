@@ -36,6 +36,7 @@ pip install -r requirements.txt
 python scripts/dataset/build_dataset.py && python scripts/dataset/export.py
 python scripts/access/build_access_inputs.py
 python scripts/access/make_access_maps.py   # карты и таблицы по results/ блокнота
+python scripts/access/scenario_south_center.py   # сценарии межрайонного центра и новых точек
 ```
 
 Пути переопределяются переменными окружения:
