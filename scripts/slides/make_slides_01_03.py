@@ -18,13 +18,13 @@ from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import HALO, finish, map_figure, save_map  # noqa: E402
+from maptools import HALO, finish, map_figure, no_yo, save_map  # noqa: E402
 OUT = ROOT / "data" / "slides"
 LAY = OUT / "layers"
 CRS = 32645  # UTM 45N для отрисовки
 
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]  # как в scripts/access/make_access_maps.py
-INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
+INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
 RU_FILL, FOREIGN_FILL, NODATA = "#ecebe6", "#f6f0e4", "#c9c8c1"
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.edgecolor": MUTED,
                      "figure.facecolor": SURFACE, "axes.facecolor": SURFACE})
@@ -54,6 +54,7 @@ r256 = roads[roads.ref.str.contains("Р-256", na=False)]
 
 
 def save(fig, name):
+    no_yo(fig)
     fig.savefig(OUT / name, dpi=200, bbox_inches="tight")
     plt.close(fig)
 
@@ -85,15 +86,15 @@ r256.plot(ax=ax, color=RAMP[3], lw=2.2)
 ax.scatter(centers.geometry.x, centers.geometry.y, s=14, color=INK, edgecolor=SURFACE, lw=0.8, zorder=4)
 ga = centers[centers.mo == "г. Горно-Алтайск"].geometry.iloc[0]
 ax.scatter([ga.x], [ga.y], s=60, color=INK, edgecolor=SURFACE, lw=1, zorder=5)
-label(ax, ga, "Горно-Алтайск", dx=10000, dy=-4000, fontweight="bold")
-for name, (dx, dy) in {"Бийск (ж/д)": (8000, 4000), "Барнаул": (8000, 0), "Новосибирск": (8000, 0)}.items():
+label(ax, ga, "Горно-Алтайск", dx=-12000, dy=-4000, fontweight="bold", ha="right")  # справа — дорога к Телецкому озеру
+for name, (dx, dy) in {"Бийск (ж/д)": (12000, 14000), "Барнаул": (8000, 0), "Новосибирск": (8000, 0)}.items():
     p = kp.loc[name].geometry
     ax.scatter([p.x], [p.y], s=14, color=MUTED, zorder=4)
     label(ax, p, name, dx=dx, dy=dy, color=MUTED)
-for name, text, (dx, dy) in [("МАПП Ташанта", "МАПП Ташанта\n→ Монголия", (-95000, -40000)),
-                             ("Карагай", "Карагай → Казахстан\n(дорога в СТП)", (-150000, -8000)),
-                             ("Кокоря", "Кокоря → Тыва\n(дорога в СТП)", (10000, 10000)),
-                             ("плато Укок", "плато Укок\n(граница с Китаем,\nпроезда нет)", (-150000, -20000))]:
+for name, text, (dx, dy) in [("МАПП Ташанта", "МАПП Ташанта\n→ Монголия", (15000, -40000)),
+                             ("Карагай", "Карагай → Казахстан\n(дорога в СТП)", (-175000, -8000)),
+                             ("Кокоря", "Кокоря → Тыва\n(дорога в СТП)", (-40000, 30000)),
+                             ("плато Укок", "плато Укок\n(граница с Китаем,\nпроезда нет)", (-175000, -45000))]:
     p = kp.loc[name].geometry
     ax.scatter([p.x], [p.y], s=40, marker="D", color=SURFACE, edgecolor=RAMP[3], lw=1.5, zorder=5)
     label(ax, p, text, dx=dx, dy=dy)
@@ -137,10 +138,17 @@ for _, r in m.iterrows():
     if r.oktmo == "84701000":
         continue
     c = r.geometry.representative_point()
-    if r.oktmo == "84615000":  # Майминский: точка подписи рядом с Горно-Алтайском
-        c = type(c)(c.x - 14000, c.y - 16000)
     law = r.law.replace("Закон РА от ", "").split(" № ")[-1] if isinstance(r.law, str) else "закона нет"
-    ax.annotate(f"{r.mo.replace(' район', '')}\n{law}", (c.x, c.y), ha="center", va="center", fontsize=7.5,
+    txt = f"{r.mo.replace(' район', '')}\n{law}"
+    if r.oktmo == "84615000":  # Майминский узкий — подпись снаружи, с выноской
+        ax.annotate(txt, (c.x, c.y), xytext=(c.x - 100000, c.y - 5000), fontsize=7.5, va="center",
+                    arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
+        continue
+    if r.oktmo == "84643000":  # Чемальский: подпись в самой широкой части района, мельче
+        c = r.geometry.centroid
+        ax.annotate(txt, (c.x, c.y), ha="center", va="center", fontsize=6.5, color=INK)
+        continue
+    ax.annotate(txt, (c.x, c.y), ha="center", va="center", fontsize=7.5,
                 color=SURFACE if r.status.endswith("2026") else INK)
 gac = m[m.oktmo == "84701000"].geometry.iloc[0].centroid
 ax.annotate("Горно-Алтайск\n(городской округ)", (gac.x, gac.y), xytext=(gac.x - 95000, gac.y + 25000),
@@ -240,10 +248,12 @@ r256.plot(ax=ax, color=RAMP[3], lw=1.8)
 big = st[st.population >= 1000]
 ax.scatter(big.geometry.x, big.geometry.y, s=4 + big.population ** 0.5 * 0.6, color=INK, edgecolor=SURFACE,
            lw=0.6, zorder=4)
+LBL = {"г. Горно-Алтайск": (6000, -1500, "left"), "село Манжерок": (-4000, -1500, "right")}  # разведены с соседними точками
 for n in ["г. Горно-Алтайск", "село Майма", "село Чемал", "село Манжерок", "село Чоя", "село Шебалино", "село Турочак"]:
     r = st[st.object_name.eq(n) | st.settlement.eq(n)]
     if len(r):
-        label(ax, r.geometry.iloc[0], n.replace("село ", "").replace("г. ", ""), dx=4000, dy=2500, fontsize=7.5)
+        dx, dy, ha = LBL.get(n, (4000, 2500, "left"))
+        label(ax, r.geometry.iloc[0], n.replace("село ", "").replace("г. ", ""), dx=dx, dy=dy, ha=ha, fontsize=7.5)
 share_t = {t: V[f"Жителей РА в {t} мин от Горно-Алтайска (горный граф), %"] for t in (30, 60, 90)}
 finish(fig, ax, extent=(ga.x - 110000, ga.y - 130000, ga.x + 110000, ga.y + 70000), handles=[Patch(color=iso_col[30], alpha=0.7, label=f"до 30 мин — {share_t[30]:.0f} % жителей РА"),
                    Patch(color=iso_col[60], alpha=0.7, label=f"30–60 мин (всего до 60 мин — {share_t[60]:.0f} %)"),

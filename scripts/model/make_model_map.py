@@ -95,18 +95,18 @@ ax.scatter(c.x, c.y, s=45, color=INK, edgecolor=SURFACE, lw=0.8, zorder=6)
 for n in INTER:
     p = pt(n)
     ax.scatter([p.x], [p.y], s=150, marker="s", color="#b9472a", edgecolor=INK, lw=1.2, zorder=7)
-    ax.text(p.x + 9000, p.y + 6000, n.replace("село ", ""), fontsize=8.5, fontweight="bold", color=INK,
+    ax.text(p.x, p.y + 14000, n.replace("село ", ""), fontsize=8.5, fontweight="bold", color=INK, ha="center",
             path_effects=HALO, zorder=8)
 for n in NEW_POINTS:
     p = pt(n)
     ax.scatter([p.x], [p.y], s=60, marker="P", color="#b9472a", edgecolor=SURFACE, lw=0.6, zorder=7)
-    ax.text(p.x + 7000, p.y - 9000, n.replace("село ", ""), fontsize=7.5, color=INK, path_effects=HALO, zorder=8)
+    ax.text(p.x - 7000, p.y - 4000, n.replace("село ", ""), fontsize=7.5, color=INK, ha="right", path_effects=HALO, zorder=8)
 core = gpd.GeoSeries([pt(n) for n in CORE], crs=CRS)
 ax.scatter(core.x, core.y, s=260, color="#b9472a", edgecolor=INK, lw=1.4, zorder=7)
-ax.text(core.x.iloc[0] + 12000, core.y.iloc[0] - 3000, "Горно-Алтайск — Майма", fontsize=9, fontweight="bold",
-        color=INK, path_effects=HALO, zorder=8)
+ax.text(core.x.iloc[0] - 14000, core.y.iloc[0] - 3000, "Горно-Алтайск — Майма", fontsize=9, fontweight="bold",
+        color=INK, ha="right", path_effects=HALO, zorder=8)  # справа — Кебезень и Каракокша
 # внешние выходы
-for name, text, (dx, dy) in [("МАПП Ташанта", "Ташанта → Монголия", (-60000, -28000)),
+for name, text, (dx, dy) in [("МАПП Ташанта", "Ташанта → Монголия", (-40000, -40000)),
                              ("Карагай", "→ Казахстан", (-45000, -22000)),
                              ("Кокоря", "→ Тыва", (14000, -4000)),
                              ("Бийск (ж/д)", "→ Бийск, Барнаул, Новосибирск", (-60000, 12000))]:

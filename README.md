@@ -61,12 +61,12 @@ python scripts/model/build_axes.py             # вторые оси модел�
 | Роль | Участник | GitHub |
 |---|---|---|
 | Глава региона, руководитель | Денис Яковлев | [mfthesun](https://github.com/mfthesun) |
-| Расселение и социокультурные факторы | Арина К. | [Arishka711](https://github.com/Arishka711) |
-| Экономика и хозяйственная деятельность | Мария Н. | [marusyayaaa](https://github.com/marusyayaaa) |
-| Транспорт и мобильность | Наталия С. | [gadunts](https://github.com/gadunts) |
-| Природные ресурсы и экология | Владислав Р. | [rengach-vlad](https://github.com/rengach-vlad) |
+| Расселение и социокультурные факторы | Арина Комарова | [Arishka711](https://github.com/Arishka711) |
+| Экономика и хозяйственная деятельность | Мария Непомнящая | [marusyayaaa](https://github.com/marusyayaaa) |
+| Транспорт и мобильность | Наталия Саркисова | [gadunts](https://github.com/gadunts) |
+| Природные ресурсы и экология | Владислав Ренгач | [rengach-vlad](https://github.com/rengach-vlad) |
 | Жильё, ЖКХ, комфортная среда | Александра Я. | [alexandra008-commits](https://github.com/alexandra008-commits) |
-| Историко-культурное наследие | Виктор Ц. | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
+| Историко-культурное наследие | Виктор Цыганов | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
 
 Презентация собирается в Figma Slides: [https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso](https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso).
 
