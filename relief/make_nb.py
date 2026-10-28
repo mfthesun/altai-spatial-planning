@@ -4,10 +4,17 @@ md=lambda s:C.append(nbf.v4.new_markdown_cell(s)); code=lambda s:C.append(nbf.v4
 md("""# Республика Алтай: доступность больниц с учётом рельефа
 Граф IduEdu → поправка на рельеф по спутниковой ЦМР Copernicus GLO-30 → OD-матрица → обеспеченность и изохроны (ObjectNat).
 
-Склонируйте репозиторий на Google Drive и укажите путь в `REPO`. Результаты пишутся в `results/`.""")
-code("""!pip -q install iduedu==2.2.0 objectnat==2.1.0 rasterio""")
-code("""from google.colab import drive; drive.mount('/content/drive')
-REPO = '/content/drive/MyDrive/altai-spatial-planning'   # <- путь к клону репозитория на Drive
+В Colab склонируйте репозиторий на Google Drive и укажите путь в `REPO`; локально блокнот сам находит корень репозитория. Результаты пишутся в `results/`.
+
+Если `overpass-api.de` не отвечает, задайте зеркало в `OVERPASS_URL` (например, `https://maps.mail.ru/osm/tools/overpass/api/interpreter`).""")
+code("""%pip -q install iduedu==2.2.0 objectnat==2.1.0 rasterio""")
+code("""import os
+try:
+    from google.colab import drive; drive.mount('/content/drive')
+    REPO = '/content/drive/MyDrive/altai-spatial-planning'   # <- путь к клону репозитория на Drive
+except ImportError:
+    REPO = os.path.abspath('..')   # локальный запуск из relief/
+# os.environ['OVERPASS_URL'] = 'https://maps.mail.ru/osm/tools/overpass/api/interpreter'   # зеркало, до import iduedu
 INPUT_DIR = f'{REPO}/data/access_inputs'; RELIEF_DIR = f'{REPO}/relief'
 OUT_DIR = f'{REPO}/results'
 import sys, os; sys.path.insert(0, RELIEF_DIR); os.makedirs(OUT_DIR, exist_ok=True); os.chdir(INPUT_DIR)
@@ -21,12 +28,16 @@ hosp_rep = gpd.read_file('hospitals_services_republican.geojson').set_index('id'
 origins = gpd.read_file('isochrone_origins.geojson')""")
 md("""## 1. Граф: дороги OSM, включая `highway=track`
 Стандартный фильтр `drive` в IduEdu исключает `track`, а в горах Алтая на них держится часть сёл. Сохраняем теги `surface`, `tracktype`.""")
-code("""g = ie.get_drive_graph(territory=terr, network_type='custom', custom_filter=ms.DRIVE_WITH_TRACKS,
-                       osm_edge_tags=['highway','surface','tracktype','smoothness','name'])
-g.write(f'{OUT_DIR}/altai_drive_flat.urbangraph')
+code("""flat_path = f'{OUT_DIR}/altai_drive_flat.urbangraph'
+if os.path.exists(flat_path):   # граф уже скачан — не дёргаем Overpass повторно
+    g = ie.UrbanGraph.read(flat_path)
+else:
+    g = ie.get_drive_graph(territory=terr, network_type='custom', custom_filter=ms.DRIVE_WITH_TRACKS,
+                           osm_edge_tags=['highway','surface','tracktype','smoothness','name'])
+    g.write(flat_path)
 print(g); g.edges_gdf['highway'].astype(str).value_counts().head(12)""")
 md("""## 2. Поправка на рельеф, кривые и покрытие
-Скачиваются нужные тайлы Copernicus DEM (≈30–40 МБ каждый, всего ~30 тайлов).""")
+Скачиваются нужные тайлы Copernicus DEM (≈30–40 МБ каждый, всего до 40 тайлов; уже скачанные пропускаются).""")
 code("""gm, rep = ms.adjust_graph(g.copy(), dem_dir=f'{OUT_DIR}/dem')
 print(rep)
 gm.write(f'{OUT_DIR}/altai_drive_mountain.urbangraph')
