@@ -52,7 +52,7 @@ python scripts/access/build_access_inputs.py
 | Экономика и хозяйственная деятельность | Мария Н. | [marusyayaaa](https://github.com/marusyayaaa) |
 | Транспорт и мобильность | Наталия С. | [gadunts](https://github.com/gadunts) |
 | Природные ресурсы и экология | Владислав Р. | [rengach-vlad](https://github.com/rengach-vlad) |
-| Жильё, ЖКХ, комфортная среда | Александра Я. | — |
+| Жильё, ЖКХ, комфортная среда | Александра Я. | [alexandra008-commits](https://github.com/alexandra008-commits) |
 | Историко-культурное наследие | Виктор Ц. | [AnotherShittyJoke](https://github.com/AnotherShittyJoke) |
 
 Презентация собирается в Figma Slides.
