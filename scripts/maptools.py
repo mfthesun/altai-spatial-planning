@@ -20,11 +20,14 @@ import re
 import textwrap
 
 import contextily as cx
+import geopandas as gpd
 import matplotlib.patheffects as pe
 import xyzservices.providers as xyz
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrow, Rectangle
+from matplotlib.lines import Line2D
 from pyproj import Transformer
+from shapely import get_parts, line_merge, union_all
 
 FIG_SIZE = (10, 7)                    # дюймы; при DPI 200 — 2000 × 1400 px
 DPI = 200
@@ -38,6 +41,31 @@ INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов �
 HALO = [pe.withStroke(linewidth=2.5, foreground=SURFACE)]
 TITLE_WRAP, LABEL_WRAP = 34, 34       # символов в строке колонки условных обозначений
 ATTR_LOC = (0.995, 0.006)             # правый нижний угол поля карты: атрибуция подложки
+
+
+def _shared_boundaries(frame):
+    edges = frame.geometry.copy()
+    for idx, geom in frame.geometry.items():
+        shared = geom.boundary.intersection(frame.drop(index=idx).geometry.union_all().boundary)
+        edges.loc[idx] = union_all([p for p in get_parts(shared) if p.geom_type in ('LineString', 'MultiLineString')])
+    # Общие стороны рисуем один раз, соединяя смежные ребра в длинные линии.
+    merged = line_merge(edges[~edges.is_empty].union_all())
+    return gpd.GeoSeries(list(get_parts(merged)), crs=frame.crs)
+
+
+def context_boundaries(ax, neighbors, border):
+    """Различимые границы: субъекты РФ, страны и Республика Алтай."""
+    assert neighbors.crs == border.crs and neighbors.iso_a2.nunique() >= 3
+    halo = [pe.withStroke(linewidth=3.5, foreground=SURFACE)]
+    _shared_boundaries(neighbors[neighbors.iso_a2.eq('RU')]).plot(
+        ax=ax, color='#626262', lw=.85, ls='-', path_effects=halo, zorder=5)
+    _shared_boundaries(neighbors.dissolve(by='iso_a2')).plot(
+        ax=ax, color='#252525', lw=1.15, ls='-', path_effects=halo, zorder=6)
+    border.boundary.plot(ax=ax, color=INK, lw=2.0, path_effects=halo, zorder=7)
+    return [Line2D([], [], color='#626262', lw=.85, ls='-', label='границы субъектов РФ'),
+            Line2D([], [], color='#252525', lw=1.15, ls='-', label='государственные границы'),
+            Line2D([], [], color=INK, lw=2.0, label='граница Республики Алтай')]
+
 # Подложки Esri только без подписей: все надписи на картах — наши и на русском.
 # World Gray Canvas и World Topo Map не подходят: на них английские названия.
 BASEMAPS = {  # стиль: (источник тайлов, атрибуция по-русски — правообладатель и источники данных)

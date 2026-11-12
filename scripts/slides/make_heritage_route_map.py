@@ -1,7 +1,7 @@
 """Маршрут наследия Анос — Калбак-Таш — Кокоря и перспективная связь с Тывой.
 
-Точки показа не обозначают границы ОКН. Пунктир к Тыве — предложение научно-образовательного
-сотрудничества, не действующая дорога или согласованный туристический маршрут.
+Точки показа не обозначают границы ОКН. Состав маршрута предварительный,
+сотрудничество с Тывой — предложение, не действующая дорога или согласованный маршрут.
 Запуск из корня: .venv/bin/python scripts/slides/make_heritage_route_map.py
 """
 from pathlib import Path
@@ -14,7 +14,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import HALO, INK, MUTED, finish, map_figure, save_map
+from maptools import HALO, INK, MUTED, context_boundaries, finish, map_figure, save_map
 
 CRS = 32645
 PURPLE = "#612e78"
@@ -41,7 +41,16 @@ def main():
     roads.plot(ax=ax, color="#9c9893", linewidth=0.55, zorder=2)
     federal = roads.ref.fillna("").str.contains("Р-256", regex=False)
     roads[federal].plot(ax=ax, color=ROAD, linewidth=1.7, zorder=3)
-    border.boundary.plot(ax=ax, color=INK, linewidth=1.0, zorder=4)
+    gpd.read_file(OUT / 'layers/road_mongolia_a0306.geojson').to_crs(CRS).plot(ax=ax, color=ROAD, linewidth=1.7, zorder=3)
+    neighbors = gpd.read_file(ROOT / 'data/slides/layers/neighbors_admin1.geojson').to_crs(CRS)
+    boundary_keys = context_boundaries(ax, neighbors, border)
+    external = pd.read_csv(OUT / 'interregional_points.csv')
+    tashanta = external[external.kind.eq('checkpoint')].iloc[0]
+    gateway = gpd.GeoSeries(gpd.points_from_xy([tashanta.longitude], [tashanta.latitude]), crs=4326).to_crs(CRS).iloc[0]
+    ax.annotate('Ташанта → Монголия', (gateway.x, gateway.y), xytext=(-15, -48),
+                textcoords='offset points', ha='right', fontsize=8, color=ROAD,
+                path_effects=HALO, zorder=10,
+                arrowprops={'arrowstyle': '-', 'color': ROAD, 'lw': .8})
 
     for row in points.itertuples():
         ax.scatter(row.geometry.x, row.geometry.y, s=95, color=PURPLE, edgecolor="white", linewidth=1.0, zorder=7)
@@ -57,7 +66,7 @@ def main():
                     arrowprops={"arrowstyle": "-", "color": PURPLE, "lw": .6,
                                 "shrinkA": 2, "shrinkB": 4})
 
-    # Реальная археология Тывы у границы — продолжение маршрута за границей (вместо стрелки).
+    # Выборка OSM пересекает несколько регионов; керескуры у Кокори находятся в Алтае.
     x0, y0, x1, y1 = border.total_bounds
     extent = (x0 - 30000, y0 - 25000, x1 + 145000, y1 + 45000)
     ty = gpd.read_file(ROOT / "data/slides/layers/coop_tyva_archaeology.geojson").to_crs(CRS)
@@ -70,18 +79,19 @@ def main():
                edgecolor=PURPLE, lw=1.0, zorder=7)
     kp = ker.geometry.union_all().representative_point() if len(ker) else None
     if kp:
-        ax.text(kp.x + 16000, kp.y - 22000, "керескуры (Тыва)", fontsize=7.2, color=PURPLE,
+        ax.text(kp.x + 16000, kp.y - 22000, "керескуры (Алтай)", fontsize=7.2, color=PURPLE,
                 style="italic", ha="left", path_effects=HALO, zorder=8)
 
     handles = [
         Patch(facecolor=PURPLE, alpha=0.14, edgecolor=PURPLE,
               label="южное ядро федеральной археологии"),
-        Line2D([], [], color=ROAD, lw=1.7, label="Р-256 «Чуйский тракт»"),
+        Line2D([], [], color=ROAD, lw=1.7, label="Р-256; продолжение A0306 в Монголии"),
         Line2D([], [], color="#9c9893", lw=.6, label="автодороги"),
         Line2D([], [], marker="o", ls="", ms=7, color=PURPLE, label="точки посещения (1–3)"),
-        Line2D([], [], marker="o", ls="", ms=4, color=PURPLE, label="археология Тывы (керескуры)"),
+        Line2D([], [], marker="o", ls="", ms=4, color=PURPLE, label="керескуры у Кокори (Республика Алтай)"),
+        Line2D([], [], marker="D", ls="", ms=4, mfc="none", mec=PURPLE, label="другие памятники археологии (OSM)"),
     ]
-    finish(fig, ax, extent=extent, handles=handles, basemap_alpha=.5)
+    finish(fig, ax, extent=extent, handles=handles + boundary_keys, basemap_alpha=.5)
     save_map(fig, OUT / "map_heritage_route.png")
 
 

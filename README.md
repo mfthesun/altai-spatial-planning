@@ -79,7 +79,11 @@ python scripts/model/build_axes.py             # вторые оси модел�
 ## Статус
 
 [Матрица приемки Issues и остаток работ](docs/project_status_2026-11-04.md):
-актуализирована 12.11.2026. В Figma 35 слайдов. Актуальные документы:
+Историческая матрица актуализирована 12.11.2026. Итог на 13.11.2026:
+**22 слайда основного показа и 15 скрытых резервных**.
+Актуальные [отчет и проверки](docs/final_presentation_2026-11-13.md),
+[манифест](docs/presentation_manifest_2026-11-13.json).
+Материалы предыдущего этапа:
 [манифест](docs/presentation_manifest_2026-11-12.json), [ревью карт](docs/map_review_2026-11-12.md),
 [доказательства закрытия](docs/issue_closure_2026-11-12.md) и
 [промпт для Figma MCP](docs/figma_mcp_completion_prompt_2026-11-12.md).

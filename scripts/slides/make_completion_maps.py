@@ -104,25 +104,26 @@ def main():
     okn = read_csv('data/okn/okn_by_mo_egrokn.csv')
     m = mo.merge(okn, left_on='mo', right_on='район2', validate='one_to_one')
     assert int(m['итого'].sum()) == 285  # еще 3 объекта без установленного района
-    geo = gpd.read_file(ROOT / 'data/okn/egrokn_altai_points_all.geojson').to_crs(CRS)
     fig, ax = base()
     handles = []
     for lo, hi, color in [(0,20,'#e8dff0'), (20,40,'#c6afd5'), (40,100,'#926baa')]:
         q=m[(m['итого']>=lo)&(m['итого']<hi)]
         q.plot(ax=ax, color=color, alpha=.65, edgecolor='white', lw=.5, zorder=1)
         handles.append(Patch(facecolor=color,label=f'ОКН по району: {lo}–{hi-1}'))
-    quality = geo['качество'].astype(str)
-    a, b = geo[quality.str.startswith('A')], geo[quality.str.startswith('B')]
-    assert (len(a),len(b)) == (76,91)
-    a.plot(ax=ax,color='#612e78',markersize=14,marker='o',edgecolor='white',linewidth=.3,zorder=7)
-    b.plot(ax=ax,color='#612e78',alpha=.3,markersize=32,marker='s',zorder=6)
+    core = m[m.mo.isin(['Онгудайский район', 'Кош-Агачский район'])]
+    assert int(core['итого'].sum()) == 111 and int(core['федеральные'].sum()) == 71
+    # Подсветка ареала использует внешний контур, без мелких внутренних колец.
+    core_outline = core.dissolve().geometry.exterior
+    assert len(core_outline) == 1 and core_outline.geom_type.eq('LinearRing').all()
+    core_outline.plot(ax=ax, color='#612e78', lw=1.8, zorder=7)
     for _, row in m.iterrows():
-        if row['mo'] in ['г. Горно-Алтайск','Майминский район']:
-            continue
         p=row.geometry.representative_point()
-        ax.text(p.x,p.y,row['mo'].replace(' район','')+'\n'+str(int(row['итого'])),ha='center',fontsize=7,path_effects=HALO,zorder=9)
-    handles += [Line2D([],[],marker='o',ls='',color='#612e78',label='ОКН: точное местоположение (76)'),
-                Line2D([],[],marker='s',ls='',color='#612e78',alpha=.4,label='ОКН: центр населенного пункта (91)')]
+        dx, dy = {'г. Горно-Алтайск': (-45000, 20000), 'Майминский район': (40000, 17000)}.get(row['mo'], (0, 0))
+        ax.annotate(row['mo'].replace(' район','')+'\n'+str(int(row['итого'])), (p.x,p.y), (p.x+dx,p.y+dy),
+                    ha='center',fontsize=7,path_effects=HALO,zorder=9,
+                    arrowprops={'arrowstyle':'-', 'color':INK, 'lw':.5} if dx or dy else None)
+    handles += [Line2D([],[],color='#612e78',lw=1.8,label='Южное ядро: 71 из 117 федеральных ОКН'),
+                Line2D([],[],color='#888888',lw=.6,label='Основные дороги (OSM)')]
     finish(fig,ax,extent,handles,basemap_alpha=.5)
     save_map(fig,OUT/'map_09_heritage.png')
 

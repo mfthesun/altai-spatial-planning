@@ -18,7 +18,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import HALO, INK, MUTED, SURFACE, finish, map_figure, save_map  # noqa: E402
+from maptools import HALO, INK, MUTED, SURFACE, context_boundaries, finish, map_figure, save_map  # noqa: E402
 
 OUT = ROOT / "data" / "model"
 LAY = ROOT / "data" / "slides" / "layers"
@@ -74,7 +74,7 @@ big.plot(ax=ax, facecolor="none", edgecolor="#2f6b3a", hatch="////", lw=0.8, zor
 sp = small.geometry.representative_point()
 ax.scatter(sp.x, sp.y, s=22, marker="^", color="#2f6b3a", edgecolor=SURFACE, lw=0.5, zorder=4.5)
 unesco.boundary.plot(ax=ax, color="#2f6b3a", lw=1.2, ls="--", zorder=2.3)
-border.boundary.plot(ax=ax, color=INK, lw=1.4, zorder=3)
+boundary_keys = context_boundaries(ax, gpd.read_file(LAY / 'neighbors_admin1.geojson').to_crs(CRS), border)
 # Только точные точки: привязки уровня B к центру НП не обозначают место ОКН.
 heritage = gpd.read_file(ROOT / 'data/okn/egrokn_altai_points_all.geojson').to_crs(CRS)
 heritage = heritage[heritage['качество'].str.startswith('A')]
@@ -85,6 +85,7 @@ r256 = roads[roads.ref.str.contains("Р-256", na=False)]
 tel = r256[r256.name.str.contains("Телецкий", na=False)]
 chuy = r256.drop(tel.index)
 chuy.plot(ax=ax, color=INK, lw=3.0, zorder=4)
+gpd.read_file(ROOT / 'data/slides/layers/road_mongolia_a0306.geojson').to_crs(CRS).plot(ax=ax, color=INK, lw=3.0, zorder=4)
 tel.plot(ax=ax, color=INK, lw=1.8, zorder=4)
 # вторые оси — по реальным дорогам: кратчайший путь на горном графе (scripts/model/build_axes.py)
 axes = gpd.read_file(ROOT / "data" / "model" / "layers" / "axes_secondary.geojson").to_crs(CRS)
@@ -112,6 +113,9 @@ ax.text(core.x.iloc[0] - 14000, core.y.iloc[0] - 3000, "Горно-Алтайс�
         color=INK, ha="right", path_effects=HALO, zorder=8)  # справа — Кебезень и Каракокша
 # трансграничные территории сотрудничества — реальные границы, а не стрелки
 kh = gpd.read_file(ROOT / "data/slides/layers/coop_khakassia_oopt.geojson").to_crs(CRS)
+kh = kh.explode(ignore_index=True)
+kh = kh[kh.geometry.distance(border.geometry.union_all()) <= 60000]  # соседние участки, целиком без обрезки
+assert not kh.empty
 kh.plot(ax=ax, facecolor="none", edgecolor="#2f6b3a", hatch="////", lw=.6, zorder=2.1)
 ty = gpd.read_file(ROOT / "data/slides/layers/coop_tyva_archaeology.geojson").to_crs(CRS)
 ty = ty[ty.geometry.x <= (border.total_bounds[2] + 160000)]  # без дальнего Аржана
@@ -132,7 +136,11 @@ for name, (codes, col) in TEZ.items():
             va="center", alpha=0.9, path_effects=HALO, zorder=3.5)
 
 x0, y0, x1, y1 = border.total_bounds
-extent = (x0 - 90000, y0 - 35000, x1 + 130000, y1 + 100000)  # ООПТ Хакасии и керескуры Тывы в кадре
+extent = (x0 - 90000, y0 - 35000, x1 + 130000, y1 + 100000)
+bx0, by0, bx1, by1 = gpd.GeoSeries(pd.concat([kh.geometry, roads.geometry], ignore_index=True), crs=CRS).total_bounds
+extent = (min(extent[0], bx0-20000), min(extent[1], by0-20000),
+          max(extent[2], bx1+20000), max(extent[3], by1+20000))
+assert extent[0] < bx0 and extent[1] < by0 and extent[2] > bx1 and extent[3] > by1
 ox0, oy0, ox1, oy1 = oopt.total_bounds
 assert len(oopt) == 55
 assert extent[0] <= ox0 and extent[1] <= oy0 and extent[2] >= ox1 and extent[3] >= oy1
@@ -145,14 +153,14 @@ finish(fig, ax, extent=extent, basemap_style="relief",
                 Line2D([], [], marker="o", ls="", ms=5, color="#096953", label="сельские ОНП (9)"),
                 Line2D([], [], marker="D", ls="", ms=5, mfc="none", mec="#ad401f", label="опорные центры (6)"),
                 Line2D([], [], marker="P", ls="", ms=7, color="#b9472a", label="точки стационарной помощи (3)"),
-                Line2D([], [], color=INK, lw=3.0, label="Р-256 «Чуйский тракт»"),
+                Line2D([], [], color=INK, lw=3.0, label="Р-256; продолжение A0306 в Монголии"),
                 Line2D([], [], color=INK, lw=1.8, label="подъезд к Телецкому озеру"),
                 Line2D([], [], color=INK, lw=1.8, ls="--", label="широтные оси"),
                 Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=INK, label="внешний выход"),
-                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label="ООПТ (Республика Алтай и Хакасия)"),
-                Line2D([], [], marker="o", ls="", ms=4, color="#612e78", label="археология Тывы (керескуры)"),
+                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label="ООПТ Алтая и соседние участки"),
+                Line2D([], [], marker="o", ls="", ms=4, color="#612e78", label="археологические объекты (OSM)"),
                 Line2D([], [], marker="^", ls="", ms=6, color="#2f6b3a", mec=SURFACE, label="памятники природы"),
                 Line2D([], [], color="#2f6b3a", lw=1.2, ls="--", label="ЮНЕСКО «Золотые горы Алтая»"),
-                Line2D([], [], marker='D', ls='', ms=4, color='#612e78', label='объекты культурного наследия (76)')])
+                Line2D([], [], marker='D', ls='', ms=4, color='#612e78', label='объекты культурного наследия (76)')] + boundary_keys)
 save_map(fig, OUT / "map_model_draft.png")
 print("ok")

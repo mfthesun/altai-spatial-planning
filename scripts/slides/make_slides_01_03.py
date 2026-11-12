@@ -235,7 +235,7 @@ iso = gpd.read_file(ROOT / "data" / "access_results" / "isochrones_gorno_altaysk
 iso = iso[iso["dist"] > 0].sort_values("dist", ascending=False)
 fig, ax = map_figure()
 veil_outside(ax, alpha=0.35)
-regions.plot(ax=ax, color=MUTED, lw=0.6, ls="--", zorder=2)
+regions.plot(ax=ax, color=MUTED, lw=0.6, ls="-", zorder=2)
 mo.boundary.plot(ax=ax, color=MUTED, lw=0.6, zorder=2)
 # ступенчатые изохроны ObjectNat — непересекающиеся кольца: 0–30, 30–60, 60–90 мин (dist — верхняя граница)
 iso_col = {30: "#c9561f", 60: "#e98a4e", 90: "#f4bb8f"}  # поверх подложки, alpha 0.7
@@ -245,7 +245,7 @@ mo[mo.oktmo.isin(["84701000", "84615000"])].boundary.plot(ax=ax, color=INK, lw=1
 roads.plot(ax=ax, color="#9b9a94", lw=0.6)
 r256.plot(ax=ax, color=RAMP[3], lw=1.8)
 big = st[st.population >= 1000]
-ax.scatter(big.geometry.x, big.geometry.y, s=4 + big.population ** 0.5 * 0.6, color=INK, edgecolor=SURFACE,
+ax.scatter(big.geometry.x, big.geometry.y, s=4 + big.population ** 0.5 * 0.6, facecolor='none', edgecolor=INK,
            lw=0.6, zorder=4)
 LBL = {"г. Горно-Алтайск": (6000, -1500, "left"), "село Манжерок": (-4000, -1500, "right")}  # разведены с соседними точками
 for n in ["г. Горно-Алтайск", "село Майма", "село Чемал", "село Манжерок", "село Чоя", "село Шебалино", "село Турочак"]:
@@ -261,8 +261,8 @@ finish(fig, ax, extent=(ga.x - 110000, ga.y - 130000, ga.x + 110000, ga.y + 7000
                    Line2D([], [], color=MUTED, lw=0.6, label="границы муниципальных образований"),
                    Line2D([], [], color=RAMP[3], lw=1.8, label="Р-256 «Чуйский тракт»"),
                    Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали"),
-                   Line2D([], [], marker="o", ls="", ms=5, color=INK, label="населённые пункты от 1 000 жителей\n(размер — население)"),
-                   Line2D([], [], color=MUTED, lw=0.6, ls="--", label="граница с Алтайским краем")],
+                   Line2D([], [], marker="o", ls="", ms=5, mfc='none', mec=INK, label="населённые пункты от 1 000 жителей\n(размер — население)"),
+                   Line2D([], [], color=MUTED, lw=0.6, ls="-", label="граница с Алтайским краем")],
        title="Условные обозначения\nвремя в пути от Горно-Алтайска:", basemap_style="relief")
 save_map(fig, OUT / "map_03_agglomeration.png")
 
