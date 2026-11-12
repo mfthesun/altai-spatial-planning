@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-from shapely.geometry import box
 
 R = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(R / "scripts"))
@@ -86,12 +85,6 @@ def flood_pts(path: str) -> gpd.GeoDataFrame:
 flood = flood_pts("data/stp_extracted/chs/flood_zone_settlements_1.csv")
 cut = flood_pts("data/stp_extracted/chs/flood_zone_settlements_2.csv")
 
-def veil_outside(ax, alpha=0.55):
-    x0, y0, x1, y1 = EXTENT
-    outside = box(x0 - 1e6, y0 - 1e6, x1 + 1e6, y1 + 1e6).difference(ra.union_all())
-    gpd.GeoSeries([outside], crs=32645).plot(ax=ax, color="#f3f1ec", alpha=alpha, zorder=8)
-
-
 fig, ax = map_figure()
 ax.set_facecolor("#ffffff")
 
@@ -106,22 +99,16 @@ ra.boundary.plot(ax=ax, color=INK, linewidth=1.2, zorder=7)
 
 bx = ra.total_bounds
 EXTENT = (bx[0] - 150000, bx[1] - 70000, bx[2] + 90000, bx[3] + 180000)
-
-
-def veil_outside(ax, alpha=0.55):
-    x0, y0, x1, y1 = EXTENT
-    outside = box(x0 - 1e6, y0 - 1e6, x1 + 1e6, y1 + 1e6).difference(ra.union_all())
-    gpd.GeoSeries([outside], crs=32645).plot(ax=ax, color="#f3f1ec", alpha=alpha, zorder=8)
-
-
-veil_outside(ax)
+ox0, oy0, ox1, oy1 = oopt.total_bounds
+assert len(oopt) == 55
+assert EXTENT[0] <= ox0 and EXTENT[1] <= oy0 and EXTENT[2] >= ox1 and EXTENT[3] >= oy1
 
 handles = [
-    Patch(facecolor="none", edgecolor=GREEN_D, hatch="///", label="ООПТ федерального значения (заповедники, нацпарк, ботсад)"),
-    Patch(facecolor="none", edgecolor=GREEN_D, hatch="\\\\\\", label="ООПТ региональные от 1 000 га (парки, заказники)"),
-    Line2D([], [], marker="o", ls="", ms=5, color=GREEN_D, label="ООПТ региональные мельче 1 000 га"),
-    Line2D([], [], marker="^", ls="", ms=8, mfc=RED, mec=INK, label="НП в зоне подтопления: 41 НП, 13,5 тыс. жителей"),
-    Line2D([], [], marker="s", ls="", ms=7, mfc=ORANGE, mec=INK, label="риск разрыва связи в паводок: 36 НП, 12,1 тыс. жителей"),
+    Patch(facecolor="none", edgecolor=GREEN_D, hatch="///", label="ООПТ федерального значения"),
+    Patch(facecolor="none", edgecolor=GREEN_D, hatch="\\\\\\", label="ООПТ региональные"),
+    Line2D([], [], marker="o", ls="", ms=5, color=GREEN_D, label="памятники природы"),
+    Line2D([], [], marker="^", ls="", ms=8, mfc=RED, mec=INK, label="зона подтопления"),
+    Line2D([], [], marker="s", ls="", ms=7, mfc=ORANGE, mec=INK, label="риск разрыва связи в паводок"),
 ]
 finish(fig, ax, extent=EXTENT, handles=handles, title="Условные обозначения", basemap_style="relief")
 save_map(fig, OUT / "map_07_constraints.png")

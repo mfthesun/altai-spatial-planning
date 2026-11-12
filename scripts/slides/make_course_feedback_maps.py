@@ -117,9 +117,9 @@ def main():
     ]:
         mark(ax, settlement(name), label, TOURISM, '^', offset, 43)
     save(fig, ax, interior, road_keys + [
-        symbol('o', '#77877f', 'Населенные пункты; размер по населению (перепись-2020)'),
-        symbol('s', ECONOMY, 'Экономический и сервисный узел'),
-        symbol('^', TOURISM, 'Курорт / туристический узел (привязка к НП)'),
+        symbol('o', '#77877f', 'населённые пункты (размер — население)'),
+        symbol('s', ECONOMY, 'экономический узел'),
+        symbol('^', TOURISM, 'туристический узел'),
     ], 'support_plan')
 
     fig, ax = base()
@@ -132,13 +132,13 @@ def main():
     additions = onp[~onp.oktmo.astype(str).isin(official.oktmo)]
     assert (len(official), len(additions)) == (9, 6)
     official.plot(ax=ax, color=ECONOMY, markersize=32, edgecolor='white', lw=.5, zorder=7)
-    onp_key = [symbol('o', ECONOMY, 'Официальный сельский ОНП по постановлению № 222 (9)'),
-               symbol('o', FEDERAL, 'Перспективный опорный центр команды (6)', 'white')]
+    onp_key = [symbol('o', ECONOMY, 'сельские ОНП по постановлению № 222 (9)'),
+               symbol('D', FEDERAL, 'опорные центры (6)', 'white')]
     export_comparison(official, onp, additions)
-    additions.plot(ax=ax, facecolor='none', edgecolor=FEDERAL, markersize=46, lw=1.1, zorder=6)
+    additions.plot(ax=ax, facecolor='none', edgecolor=FEDERAL, marker='D', markersize=46, lw=1.1, zorder=6)
     for name, offset in {
-        'Акташ': (-10, 10), 'Кебезень': (18, 18), 'Каракокша': (18, -18),
-        'Иогач': (-18, -18), 'Беляши': (-10, 8), 'Катанда': (10, -10),
+        'Акташ': (-10, 10), 'Кебезень': (18, 18), 'Каракокша': (24, -20),
+        'Иогач': (-24, 24), 'Беляши': (-10, 8), 'Катанда': (10, -10),
     }.items():
         p = onp.loc[onp['name'].str.endswith(name), 'geometry'].iloc[0]
         ax.annotate(name, (p.x, p.y), xytext=offset, textcoords='offset points',
@@ -154,6 +154,7 @@ def main():
         (84.95, 53.17, 'АЛТАЙСКИЙ КРАЙ'), (87.20, 52.96, 'КУЗБАСС'),
         (89.52, 50.85, 'ТЫВА'), (90.05, 52.06, 'ХАКАСИЯ'),
         (83.96, 49.77, 'КАЗАХСТАН'), (88.64, 49.06, 'МОНГОЛИЯ'),
+        (87.6, 47.9, 'КИТАЙ'),
     ]:
         point = points(pd.DataFrame({'longitude': [lon], 'latitude': [lat]})).geometry.iloc[0]
         ax.text(point.x, point.y, label, color='#52514e', fontsize=7.4, ha='center',
@@ -162,7 +163,40 @@ def main():
     katun = protected[protected['name'].eq('Катунский')]
     assert len(katun) == 1
     katun.plot(ax=ax, color=PROTECTED, edgecolor=ECONOMY, alpha=.76, lw=.7, zorder=3)
+    # Трансграничные территории сотрудничества — реальные границы вместо стрелок.
+    OOPT_HATCH = dict(facecolor='none', edgecolor=PROTECTED, hatch='///', lw=.7, zorder=3)
+    kh = geo('slides/layers/coop_khakassia_oopt.geojson')
+    kh.plot(ax=ax, **OOPT_HATCH)
+    for nm, short in [('Шорский национальный парк', 'Шорский нацпарк'),
+                      ('Хакасский заповедник', 'Хакасский заповедник')]:
+        g = kh[kh.name.eq(nm)]
+        if len(g):
+            p = g.geometry.iloc[0].representative_point()
+            ax.text(p.x, p.y, short, fontsize=6.4, color='#2c5a3e', ha='center',
+                    path_effects=HALO, zorder=5)
+    for fname in ('coop_mongolia_oopt', 'coop_kazakhstan_oopt', 'coop_china_oopt'):
+        g = geo(f'slides/layers/{fname}.geojson')
+        if len(g):
+            g.plot(ax=ax, **OOPT_HATCH)
+    for fname, short in [('coop_mongolia_oopt', 'Алтай-Таван-Богд'),
+                         ('coop_kazakhstan_oopt', 'Катон-Карагай')]:
+        g = geo(f'slides/layers/{fname}.geojson')
+        if len(g):
+            p = g.geometry.iloc[0].representative_point()
+            ax.text(p.x, p.y, short, fontsize=6.4, color='#2c5a3e', ha='center',
+                    path_effects=HALO, zorder=5)
+    ARCH = '#612e78'
+    ty = geo('slides/layers/coop_tyva_archaeology.geojson')
+    ker = ty[ty.name.eq('керескур')]
+    named = ty[~ty.name.eq('керескур')]
+    ax.scatter(ker.geometry.x, ker.geometry.y, s=6, color=ARCH, zorder=4)
+    ax.scatter(named.geometry.x, named.geometry.y, s=30, marker='D', facecolor='none',
+               edgecolor=ARCH, lw=.9, zorder=5)
+    kp = ker.geometry.union_all().representative_point()
+    ax.text(kp.x - 6000, kp.y - 28000, 'керескуры', fontsize=6.4, color=ARCH, ha='right',
+            style='italic', path_effects=HALO, zorder=5)
     outside = points(pd.read_csv(OUT / 'interregional_points.csv'))
+    outside = outside[outside.kind != 'protected']  # ООПТ — полигонами, не точками
     for row in outside.itertuples():
         style = {
             'airport': (REGIONAL, '^', 40), 'hub': (REGIONAL, 's', 30),
@@ -171,12 +205,13 @@ def main():
         }[row.kind]
         mark(ax, row.geometry, row.label.replace('|', '\n'), style[0], style[1],
              (row.dx, row.dy), style[2], leader=row.label == 'Аэропорт|Горно-Алтайск')
-    save(fig, ax, (x0-140000, y0-65000, x1+105000, y1+162000), road_keys + [
+    save(fig, ax, (x0-140000, y0-150000, x1+105000, y1+162000), road_keys + [
         symbol('^', REGIONAL, 'Аэропорт'), symbol('s', REGIONAL, 'Транспортный узел'),
-        symbol('o', INK, 'Населенный пункт'), symbol('D', FEDERAL, 'Пункт пропуска'),
-        Patch(facecolor=PROTECTED, label='Катунский заповедник (контур)'),
-        symbol('D', ECONOMY, 'Катон-Карагайский НП (точка); вместе — резерват «Большой Алтай»'),
-        Line2D([], [], color='#898682', lw=.55, ls='--', label='Внешние административные границы'),
+        symbol('D', FEDERAL, 'Пункт пропуска'),
+        Patch(facecolor=PROTECTED, alpha=.76, edgecolor=ECONOMY, label='Катунский заповедник'),
+        Patch(facecolor='none', edgecolor=PROTECTED, hatch='///', label='ООПТ соседних регионов и стран'),
+        Line2D([], [], marker='o', ls='', ms=4, color=ARCH, label='археология Тывы (керескуры)'),
+        Line2D([], [], color='#898682', lw=.55, ls='--', label='границы субъектов и стран'),
     ], 'interregional')
 
 

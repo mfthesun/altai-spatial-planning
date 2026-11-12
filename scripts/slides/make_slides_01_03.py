@@ -155,8 +155,7 @@ ax.annotate("Горно-Алтайск\n(городской округ)", (gac.x
             fontsize=7.5, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
 bx0, by0, bx1, by1 = m.total_bounds
 finish(fig, ax, extent=(bx0 - 20000, by0 - 30000, bx1 + 20000, by1 + 20000),
-       handles=[Patch(color=STYLE[k], alpha=0.72, label=k) for k in STYLE] +
-               [Line2D([], [], color=SURFACE, lw=0, label="подпись: район и закон\nо статусе округа")],
+       handles=[Patch(color=STYLE[k], alpha=0.72, label=k) for k in STYLE],
        title="Условные обозначения\nстатус на 28.10.2026:", basemap_style="relief")
 save_map(fig, OUT / "map_02_reform_status.png")
 
@@ -178,7 +177,7 @@ fig, ax = plt.subplots(figsize=(11, 3.6))
 d = pd.to_datetime([e[0] for e in EVENTS])
 ax.axhline(0, color=MUTED, lw=1)
 ax.axvline(pd.Timestamp("2026-10-28"), color=RAMP[1], lw=1, ls="--")
-ax.annotate("сейчас (28.10.2026)", (pd.Timestamp("2026-10-28"), 3.5), xytext=(4, 0), textcoords="offset points",
+ax.annotate("дата сверки: 28.10.2026", (pd.Timestamp("2026-10-28"), 3.5), xytext=(4, 0), textcoords="offset points",
             color=MUTED, fontsize=7.5, ha="left", va="top")
 for (_, text, lvl, kind), x in zip(EVENTS, d):
     ax.vlines(x, 0, lvl * 0.8, color=NODATA, lw=0.8)
@@ -277,7 +276,7 @@ fc = [("Факт 1.01.2025", V["Население агломерации 1.01.2
 fig, ax = plt.subplots(figsize=(6.5, 3.4))
 bars = ax.barh([f[0] for f in fc][::-1], [f[1] for f in fc][::-1], color=[f[2] for f in fc][::-1], height=0.6)
 for b, f in zip(bars, fc[::-1]):
-    ax.annotate(f"{f[1]:.1f}", (b.get_width(), b.get_y() + b.get_height() / 2), xytext=(4, 0),
+    ax.annotate(f"{f[1]:.1f}".replace('.', ','), (b.get_width(), b.get_y() + b.get_height() / 2), xytext=(4, 0),
                 textcoords="offset points", va="center", fontsize=8, color=INK)
 ax.set_xlim(0, 140)
 ax.set_xlabel("жителей агломерации, тыс. чел.", color=MUTED)
