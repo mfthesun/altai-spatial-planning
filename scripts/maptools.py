@@ -122,9 +122,17 @@ def basemap(ax, style="relief", crs=32645, alpha=1.0):
     """Подложка Esri под всеми слоями и её атрибуция в правом нижнем углу поля.
 
     alpha < 1 приглушает подложку для карт с большим числом цветных знаков.
+    Zoom подбирается под ширину поля карты в пикселях, чтобы подложка не растягивалась
+    (иначе рельеф выходит «мыльным» при сохранении в 2000 px).
     """
     src, attribution = BASEMAPS[style]
-    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10, reset_extent=True, alpha=alpha)
+    fw, _ = ax.figure.get_size_inches()
+    field_px = fw * DPI * MAP_RECT[2]
+    x0, x1 = ax.get_xlim()
+    width_m = max(abs(x1 - x0), 1.0)
+    zoom = min(12, max(0, math.ceil(math.log2(field_px * 40075016.0 / (256.0 * width_m)))))
+    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10,
+                   reset_extent=True, alpha=alpha, zoom=zoom)
     ax.text(*ATTR_LOC, f"Подложка: {attribution}", transform=ax.transAxes, ha="right", va="bottom",
             fontsize=5.5, color=MUTED, path_effects=HALO, zorder=21, wrap=True)
 

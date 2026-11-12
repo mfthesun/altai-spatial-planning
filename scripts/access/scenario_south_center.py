@@ -46,6 +46,8 @@ for k in (1, 2):
 mc = pd.DataFrame(rows)
 mc["gain_pop"] = mc.pop_within - mc.pop_within.iloc[0]
 mc = mc.sort_values(["k", "share"], ascending=[True, False])
+assert mc.iloc[0].share == 56.8, "Изменилась базовая доступность Республиканской больницы"
+assert mc[mc.k == 2].iloc[0].share == 81.1, "Изменился принятый сценарий двух центров"
 mc.to_csv(OUT / "scenario_interdistrict_center.csv", index=False)
 print(mc.groupby("k").head(4).to_string(index=False))
 
@@ -70,6 +72,7 @@ for step in (1, 2, 3):
     sites = sites.drop(best)
 nw = pd.DataFrame(steps)
 nw["pop_outside"] = int(round(pop.sum())) - nw.pop_within
+assert nw.iloc[-1].share == 95.3 and nw.iloc[-1].pop_outside == 9849, "Изменился принятый сценарий трех точек"
 nw.to_csv(OUT / "scenario_new_points_60min.csv", index=False)
 print(nw.to_string(index=False))
 
@@ -90,7 +93,7 @@ from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Patch  # noqa: E402
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import finish, map_figure, no_yo, save_map  # noqa: E402
+from maptools import HALO, finish, map_figure, no_yo, save_map  # noqa: E402
 
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
 INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
@@ -111,6 +114,13 @@ for name, ids in [("map_scenario_center_now.png", [REP]),            # сейч�
                edgecolor=SURFACE, linewidth=0.5, zorder=3)
     hp = hosp.loc[ids].to_crs(CRS)
     ax.scatter(hp.geometry.x, hp.geometry.y, marker="P", s=80, c=INK, edgecolor=SURFACE, zorder=4)
+    if len(ids) > 1:
+        for hid, label, offset in [(8, "Кош-Агач", (10, -12)), (9, "Усть-Кан", (-10, 10))]:
+            p = hosp.loc[[hid]].to_crs(CRS).geometry.iloc[0]
+            ax.annotate(label, (p.x, p.y), xytext=offset, textcoords="offset points", fontsize=8,
+                        ha="left" if offset[0] > 0 else "right", color=INK, path_effects=HALO, zorder=8,
+                        arrowprops={"arrowstyle": "-", "color": INK, "lw": .6, "shrinkA": 2, "shrinkB": 3})
+    assert len(ax.texts) == (2 if len(ids) > 1 else 0)
     m = metrics(t, 120)
     print(f"{name}: в 120 мин {m['share']:.1f} % жителей, на юге {m['share_south']:.1f} %")  # для подписи к рисунку
     finish(fig, ax, extent=(bx0 - 15000, by0 - 15000, bx1 + 15000, by1 + 15000),
@@ -129,7 +139,8 @@ fig, ax = plt.subplots(figsize=(7.5, 3.6))
 y = list(range(len(show)))[::-1]
 ax.barh(y, show.share, height=0.6, color="#2a78d6")
 for yi, v, gp in zip(y, show.share, show.gain_pop):
-    ax.text(v + 1, yi, f"{v:.1f} %" + (f"  (+{gp / 1000:.1f} тыс. чел.)" if gp else ""), va="center", color=MUTED, fontsize=8)
+    label = f"{v:.1f} %" + (f"  (+{gp / 1000:.1f} тыс. чел.)" if gp else "")
+    ax.text(v + 1, yi, label.replace('.', ','), va="center", color=MUTED, fontsize=8)
 ax.set_yticks(y, lab)
 ax.set_xlim(0, 105)
 ax.set_xlabel("% жителей республики в 120 мин от многопрофильной больницы")

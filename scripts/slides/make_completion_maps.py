@@ -55,12 +55,12 @@ def main():
         label = f'{lo:,}–{hi-1:,.0f}' if hi != float('inf') else '10 000 и больше'
         if lo == 0:
             label = 'меньше 500'
-        handles.append(Line2D([], [], marker='o', ls='', ms=size**.5, color='#789b92', label=f'Жителей (перепись-2020): {label}'.replace(',', ' ')))
+        handles.append(Line2D([], [], marker='o', ls='', ms=size**.5, color='#789b92', label=f'жителей: {label}'.replace(',', ' ')))
     official = read_csv('data/slides/onp_decree_222.csv').oktmo.astype(str)
     is_official = onp.oktmo.astype(str).isin(official)
     assert (is_official.sum(), (~is_official).sum()) == (9, 6)
-    onp[is_official].plot(ax=ax, facecolor='none', edgecolor='#b9472a', markersize=85, linewidth=.9, zorder=6)
-    onp[~is_official].plot(ax=ax, facecolor='none', edgecolor='#33637d', marker='s', markersize=70, linewidth=.9, zorder=6)
+    onp[is_official].plot(ax=ax, color='#096953', markersize=32, edgecolor='white', linewidth=.5, zorder=6)
+    onp[~is_official].plot(ax=ax, facecolor='none', edgecolor='#ad401f', marker='D', markersize=46, linewidth=1.1, zorder=6)
     for name, dx, dy in [('Горно-Алтайск', -70000, 15000), ('Майма', 20000, 10000), ('Кош-Агач', 12000, -10000), ('Усть-Кан', -60000, 8000)]:
         source = st if name in {'Горно-Алтайск', 'Майма'} else onp
         key = 'settlement' if source is st else 'name'
@@ -68,8 +68,8 @@ def main():
         ax.annotate(name, (p.x, p.y), (p.x+dx, p.y+dy), fontsize=8, path_effects=HALO,
                     arrowprops={'arrowstyle':'-', 'color':INK, 'lw':.5}, zorder=8)
     handles += [
-        Line2D([], [], marker='o', ls='', ms=8, mfc='none', mec='#b9472a', label='Официальные сельские ОНП по постановлению № 222 (9)'),
-        Line2D([], [], marker='s', ls='', ms=8, mfc='none', mec='#33637d', label='Перспективные опорные центры команды (6)'),
+        Line2D([], [], marker='o', ls='', ms=6, color='#096953', label='сельские ОНП по постановлению № 222 (9)'),
+        Line2D([], [], marker='D', ls='', ms=6, mfc='none', mec='#ad401f', label='опорные центры (6)'),
     ]
     finish(fig, ax, extent, handles, basemap_alpha=.5)
     save_map(fig, OUT / 'map_04_settlement.png')
@@ -87,14 +87,18 @@ def main():
             q.plot(ax=ax, color=color, alpha=.75, edgecolor='white', lw=.5, zorder=1)
         label = ['меньше 15', '15–25', '25–35', '35 и больше'][i]
         handles.append(Patch(facecolor=color, label=f'{label} тыс. руб./жителя в месяц'))
+    labels = []
     for _, row in m.iterrows():
         p = row.geometry.representative_point()
         name = row['mo'].replace(' район', '').replace('г. ', '')
-        if row['mo'] in ['г. Горно-Алтайск', 'Майминский район']:
-            continue
-        ax.text(p.x, p.y, name+'\n'+f'{row[col]/1000:.1f}'.replace('.', ','), ha='center', fontsize=7, path_effects=HALO, zorder=8)
+        dx, dy = {'г. Горно-Алтайск': (-55000, 18000), 'Майминский район': (30000, 16000)}.get(row['mo'], (0, 0))
+        ax.annotate(name+'\n'+f'{row[col]/1000:.1f}'.replace('.', ','), (p.x, p.y), (p.x+dx, p.y+dy),
+                    ha='center', fontsize=7, path_effects=HALO, zorder=8,
+                    arrowprops={'arrowstyle': '-', 'color': INK, 'lw': .5} if dx or dy else None)
+        labels.append(name)
+    assert len(labels) == len(m) == 11
     handles.append(Line2D([], [], color='#888888', label='Основные дороги (OSM)'))
-    finish(fig, ax, extent, handles, title='Доходы по месту учета налогового агента, 2025', basemap_alpha=.5)
+    finish(fig, ax, extent, handles, title='Выплаты налоговых агентов\nна жителя, 2025', basemap_alpha=.5)
     save_map(fig, OUT / 'map_05_economy.png')
 
     okn = read_csv('data/okn/okn_by_mo_egrokn.csv')
@@ -117,9 +121,8 @@ def main():
             continue
         p=row.geometry.representative_point()
         ax.text(p.x,p.y,row['mo'].replace(' район','')+'\n'+str(int(row['итого'])),ha='center',fontsize=7,path_effects=HALO,zorder=9)
-    handles += [Line2D([],[],marker='o',ls='',color='#612e78',label='76 объектов: координаты ЕГРОКН (A)'),
-                Line2D([],[],marker='s',ls='',color='#612e78',alpha=.4,label='91 объект: только центр НП (B)'),
-                Patch(facecolor='white',edgecolor='white',label='Всего 288 ОКН; 3 без района. 121 без точки. Точки B могут совпадать.')]
+    handles += [Line2D([],[],marker='o',ls='',color='#612e78',label='ОКН: точное местоположение (76)'),
+                Line2D([],[],marker='s',ls='',color='#612e78',alpha=.4,label='ОКН: центр населенного пункта (91)')]
     finish(fig,ax,extent,handles,basemap_alpha=.5)
     save_map(fig,OUT/'map_09_heritage.png')
 

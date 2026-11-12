@@ -1,8 +1,8 @@
-"""Схема пространственной модели (задача 08, черновик к командной сессии).
+"""Схема пространственной модели (задача 08).
 
 Зоны ТЭЗ (гипотеза из docs/altai_context.md, разд. 6, по границам МО), узлы четырёх уровней,
-опорные оси, внешние выходы и природный каркас (55 ООПТ по официальным контурам, объект ЮНЕСКО).
-Историко-культурный каркас: точные координаты 76 ОКН из ЕГРОКН.
+опорные оси, внешние выходы и природный каркас (55 контуров карты ООПТ России, объект ЮНЕСКО).
+Историко-культурный каркас: реестровые координаты 76 ОКН из ЕГРОКН.
 Читает data/slides/layers/, data/oopt/oopt_oczk_2026-10-28.geojson, data/model/layers/, data/onp_candidates.csv,
 data/dataset_v3/settlements.csv. Пишет data/model/map_model_draft.png.
 Запуск из корня репозитория: python scripts/model/make_model_map.py
@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -63,9 +62,6 @@ summ = csv("data/dataset_v4/mo_summary.csv")
 centers = [f"село {c}" for c in summ.center if c != "Горно-Алтайск"]
 
 fig, ax = map_figure()
-# вуаль вне РА
-outside = gpd.GeoSeries([box(*border.buffer(600000).total_bounds).difference(border.union_all())], crs=CRS)
-outside.plot(ax=ax, color=SURFACE, alpha=0.55, lw=0, zorder=1)
 # ТЭЗ
 mo["oktmo"] = mo["oktmo"].astype(str)
 for name, (codes, col) in TEZ.items():
@@ -97,8 +93,8 @@ axes.plot(ax=ax, color=INK, lw=1.8, ls="--", zorder=4)
 official = csv("data/slides/onp_decree_222.csv").oktmo.astype(str)
 is_official = onp.oktmo.astype(str).isin(official)
 assert (is_official.sum(), (~is_official).sum()) == (9, 6)
-ax.scatter(onp[is_official].geometry.x, onp[is_official].geometry.y, s=14, color=SURFACE, edgecolor=INK, lw=0.8, zorder=5)
-ax.scatter(onp[~is_official].geometry.x, onp[~is_official].geometry.y, s=20, marker="D", color=SURFACE, edgecolor=INK, lw=0.8, zorder=5)
+ax.scatter(onp[is_official].geometry.x, onp[is_official].geometry.y, s=24, color="#096953", edgecolor=SURFACE, lw=0.5, zorder=5)
+ax.scatter(onp[~is_official].geometry.x, onp[~is_official].geometry.y, s=32, marker="D", facecolor="none", edgecolor="#ad401f", lw=1.1, zorder=5)
 c = gpd.GeoSeries([pt(n) for n in centers if n not in INTER], crs=CRS)
 ax.scatter(c.x, c.y, s=45, color=INK, edgecolor=SURFACE, lw=0.8, zorder=6)
 for n in INTER:
@@ -114,10 +110,16 @@ core = gpd.GeoSeries([pt(n) for n in CORE], crs=CRS)
 ax.scatter(core.x, core.y, s=260, color="#b9472a", edgecolor=INK, lw=1.4, zorder=7)
 ax.text(core.x.iloc[0] - 14000, core.y.iloc[0] - 3000, "Горно-Алтайск — Майма", fontsize=9, fontweight="bold",
         color=INK, ha="right", path_effects=HALO, zorder=8)  # справа — Кебезень и Каракокша
+# трансграничные территории сотрудничества — реальные границы, а не стрелки
+kh = gpd.read_file(ROOT / "data/slides/layers/coop_khakassia_oopt.geojson").to_crs(CRS)
+kh.plot(ax=ax, facecolor="none", edgecolor="#2f6b3a", hatch="////", lw=.6, zorder=2.1)
+ty = gpd.read_file(ROOT / "data/slides/layers/coop_tyva_archaeology.geojson").to_crs(CRS)
+ty = ty[ty.geometry.x <= (border.total_bounds[2] + 160000)]  # без дальнего Аржана
+ax.scatter(ty.geometry.x, ty.geometry.y, s=9, color="#612e78", zorder=2.2)
 # внешние выходы
 for name, text, (dx, dy) in [("МАПП Ташанта", "Ташанта → Монголия", (-40000, -40000)),
                              ("Карагай", "→ Казахстан", (-45000, -22000)),
-                             ("Кокоря", "→ Тыва", (14000, -4000)),
+                             ("Кокоря", "Кокоря", (14000, -4000)),
                              ("Бийск (ж/д)", "→ Бийск, Барнаул, Новосибирск", (-60000, 12000))]:
     p = kp.loc[name].geometry
     ax.scatter([p.x], [p.y], s=55, marker="D", color=SURFACE, edgecolor=INK, lw=1.4, zorder=7)
@@ -130,22 +132,27 @@ for name, (codes, col) in TEZ.items():
             va="center", alpha=0.9, path_effects=HALO, zorder=3.5)
 
 x0, y0, x1, y1 = border.total_bounds
-finish(fig, ax, extent=(x0 - 30000, y0 - 20000, x1 + 20000, y1 + 40000), basemap_style="relief",
-       title="Условные обозначения\nпространственная модель (черновик)",
-       handles=[Patch(facecolor=col, alpha=0.45, edgecolor=col, label=f"ТЭЗ {name}") for name, (_, col) in TEZ.items()] +
+extent = (x0 - 90000, y0 - 35000, x1 + 130000, y1 + 100000)  # ООПТ Хакасии и керескуры Тывы в кадре
+ox0, oy0, ox1, oy1 = oopt.total_bounds
+assert len(oopt) == 55
+assert extent[0] <= ox0 and extent[1] <= oy0 and extent[2] >= ox1 and extent[3] >= oy1
+finish(fig, ax, extent=extent, basemap_style="relief",
+       title="Условные обозначения\nпространственная модель",
+       handles=[Patch(facecolor=col, alpha=0.45, edgecolor=col, label=name) for name, (_, col) in TEZ.items()] +
                [Line2D([], [], marker="o", ls="", ms=12, mfc="#b9472a", mec=INK, label="ядро: Горно-Алтайск — Майма"),
-                Line2D([], [], marker="s", ls="", ms=9, mfc="#b9472a", mec=INK, label="межрайонный центр (предложение)"),
+                Line2D([], [], marker="s", ls="", ms=9, mfc="#b9472a", mec=INK, label="межрайонный центр"),
                 Line2D([], [], marker="o", ls="", ms=6, mfc=INK, mec=SURFACE, label="районный центр"),
-                Line2D([], [], marker="o", ls="", ms=4.5, mfc=SURFACE, mec=INK, label="официальный сельский ОНП (9)"),
-                Line2D([], [], marker="D", ls="", ms=4.5, mfc=SURFACE, mec=INK, label="перспективный опорный центр команды (6)"),
-                Line2D([], [], marker="P", ls="", ms=7, color="#b9472a", label="новая точка стационарной помощи (предложение)"),
-                Line2D([], [], color=INK, lw=3.0, label="главная ось: Р-256 «Чуйский тракт»"),
-                Line2D([], [], color=INK, lw=1.8, label="вторая ось: Р-256, подъезд к Телецкому озеру (Майма — Артыбаш)"),
-                Line2D([], [], color=INK, lw=1.8, ls="--", label="вторые оси по дорогам: Черга — Усть-Кан — Усть-Кокса — Карагай, Акташ — Улаган"),
+                Line2D([], [], marker="o", ls="", ms=5, color="#096953", label="сельские ОНП (9)"),
+                Line2D([], [], marker="D", ls="", ms=5, mfc="none", mec="#ad401f", label="опорные центры (6)"),
+                Line2D([], [], marker="P", ls="", ms=7, color="#b9472a", label="точки стационарной помощи (3)"),
+                Line2D([], [], color=INK, lw=3.0, label="Р-256 «Чуйский тракт»"),
+                Line2D([], [], color=INK, lw=1.8, label="подъезд к Телецкому озеру"),
+                Line2D([], [], color=INK, lw=1.8, ls="--", label="широтные оси"),
                 Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=INK, label="внешний выход"),
-                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label=f"ООПТ от 1 000 га ({len(big)})"),
-                Line2D([], [], marker="^", ls="", ms=6, color="#2f6b3a", mec=SURFACE, label=f"ООПТ меньше 1 000 га ({len(small)})"),
-                Line2D([], [], color="#2f6b3a", lw=1.2, ls="--", label="объект ЮНЕСКО «Золотые горы Алтая»"),
-                Line2D([], [], marker='D', ls='', ms=4, color='#612e78', label='76 ОКН с точными координатами (ЕГРОКН)')])
+                Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label="ООПТ (Республика Алтай и Хакасия)"),
+                Line2D([], [], marker="o", ls="", ms=4, color="#612e78", label="археология Тывы (керескуры)"),
+                Line2D([], [], marker="^", ls="", ms=6, color="#2f6b3a", mec=SURFACE, label="памятники природы"),
+                Line2D([], [], color="#2f6b3a", lw=1.2, ls="--", label="ЮНЕСКО «Золотые горы Алтая»"),
+                Line2D([], [], marker='D', ls='', ms=4, color='#612e78', label='объекты культурного наследия (76)')])
 save_map(fig, OUT / "map_model_draft.png")
 print("ok")
