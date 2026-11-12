@@ -1,0 +1,224 @@
+﻿source_id,url,local_path
+inspection_gike,https://okn-ra.ru/dokumenty/zaklyucheniya-istoriko-kulturnoj-ekspertizy,data/okn/evidence/inspection_gike.html
+pazyryk_gike_2021,https://okn-ra.ru/attachments/article/57/Акт%20Пазырык.pdf,data/okn/evidence/pazyryk_gike_2021.pdf
+katanda_gike_2021,https://okn-ra.ru/attachments/article/57/Акт%20Катанда.pdf,data/okn/evidence/katanda_gike_2021.pdf
+kosh_heritage_list,https://www.mokoshagach.ru/upload/iblock/abb/abb638ffaa094992f5ab1fadf48117e2.pdf,data/okn/evidence/kosh_heritage_list.pdf
+maima_stp_heritage,https://www.maima-altai.ru/gradostroitelnoy-zonirovanie/СТП/Том_II_Материалы_по_обоснованию.pdf,data/okn/evidence/maima_stp_heritage.pdf
+gasu_ancient_altai_2001,https://e-lib.gasu.ru/da/archive/2001/N7/N7.pdf,data/okn/evidence/gasu_ancient_altai_2001.pdf
+ukaz176_copy,https://museumkk.ru/images/PDF/Ukaz.pdf,data/okn/evidence/ukaz176_copy.pdf
+afanasievo_2014,https://www.old.archeo.ru/izdaniya-1/vagnejshije-izdanija/pdf/SvodAfanas2014.pdf,data/okn/evidence/afanasievo_2014.pdf
+kungurov_2006,https://archeology.asu.ru/images/5/5d/KungurZiroIstorPaleol2006.pdf,data/okn/evidence/kungurov_2006.pdf
+chemal_stp_heritage,https://chemal-altai.ru/upload/iblock/f17/e4bn1k8kv08yg79yerb7was3trv4n22g.pdf,data/okn/evidence/chemal_stp_heritage.pdf
+maima_gp_heritage,https://maima-sp.ru/documents/pubslyh/Обосновывающие%20материалы%20%28ПЗ%29-ilovepdf-compressed.pdf,data/okn/evidence/maima_gp_heritage.pdf
+ukaz176_mkrf,https://okn-mk.mkrf.ru/maps/show/id/1909008,data/okn/evidence/ukaz176_mkrf.html
+gike_mayma_2021,https://okn-ra.ru/attachments/article/57/%21АКТ%2018_07_21.pdf,data/okn/evidence/gike_mayma_2021.pdf
+kalbak_gike_2021,https://okn-ra.ru/attachments/article/57/Акт%20Калбак%20-Таш.pdf,data/okn/evidence/kalbak_gike_2021.pdf
+inspection_home,https://okn-ra.ru/,data/okn/evidence/inspection_home.html
+gorno_gp_heritage,https://gornoaltaysk.ru/upload/iblock/38f/vd7kbr00jp8h9cjjr77qdrwb2kr8z0aj.pdf,data/okn/evidence/gorno_gp_heritage.pdf
+inspection_boundaries,https://okn-ra.ru/dokumenty/granitsy-territorii,data/okn/evidence/inspection_boundaries.html
+inspection_acts,https://okn-ra.ru/dokumenty/pravovye-akty/normativnye-pravovye-akty-inspektsii,data/okn/evidence/inspection_acts.html
+inspection_federal,https://okn-ra.ru/kulturnoe-nasledie/ob-ekty-kulturnogo-naslediya/perechen-ob-ektov-federalnogo-znacheniya,data/okn/evidence/inspection_federal.html
+boundary_order_37_2019,https://okn-ra.ru/attachments/article/106/Приказ%20№%2037%20от%2028.03.2019%20г..pdf,data/okn/evidence/boundary_order_37_2019.pdf
+boundary_order_32_2019,https://okn-ra.ru/attachments/article/106/Приказ%20№%2032%20от%2028.03.2019%20г..pdf,data/okn/evidence/boundary_order_32_2019.pdf
+boundary_order_38_2019,https://okn-ra.ru/attachments/article/106/Приказ%20№%2038%20от%2028.03.2019%20г..pdf,data/okn/evidence/boundary_order_38_2019.pdf
+inspection_federal_list,https://okn-ra.ru/attachments/article/60/Список%20окн%20федерального%20значения%20для%20сайта%20.pdf,data/okn/evidence/inspection_federal_list.pdf
+tarkhata_gienko_2011,https://www.sibran.ru/upload/iblock/389/389bc54ee89b49510faa8b3eff105090.pdf,data/okn/evidence/tarkhata_gienko_2011.pdf
+tarkhata_gienko_2014,https://aaatec.org/documents/article/ge1r.pdf,data/okn/evidence/tarkhata_gienko_2014.pdf
+karabom_2016,https://old.archaeology.nsc.ru/ru/publish/journal/doc/2016/441.pdf,data/okn/evidence/karabom_2016.pdf
+bodunov_address_osm,https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A30%5D%3Bnwr%2851.90%2C85.89%2C52.02%2C86.03%29%5B%22addr%3Ahousenumber%22%3D%226%22%5D%5B%22addr%3Astreet%22~%22%D0%A1%D0%BE%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D1%81%D1%82%22%2Ci%5D%3Bout+center+tags%3B,data/okn/evidence/bodunov_address_osm.json
+bodunov_nominatim,https://nominatim.openstreetmap.org/search?street=6+%D0%A1%D0%BE%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F+%D1%83%D0%BB%D0%B8%D1%86%D0%B0&city=%D0%93%D0%BE%D1%80%D0%BD%D0%BE-%D0%90%D0%BB%D1%82%D0%B0%D0%B9%D1%81%D0%BA&country=%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F&format=jsonv2&addressdetails=1&limit=5,data/okn/evidence/bodunov_nominatim.json
+gike_1b9992f9a9b5,https://okn-ra.ru/attachments/article/57/!АКТ 05-12_21.pdf,data/okn/evidence/gike_1b9992f9a9b5.pdf
+gike_200f40f2ede2,https://okn-ra.ru/attachments/article/57/!АКТ 06-12_21.pdf,data/okn/evidence/gike_200f40f2ede2.pdf
+gike_22455f21e240,https://okn-ra.ru/attachments/article/57/!АКТ 07-12_21.pdf,data/okn/evidence/gike_22455f21e240.pdf
+gike_7c593a546364,https://okn-ra.ru/attachments/article/57/!АКТ 08-12_21.pdf,data/okn/evidence/gike_7c593a546364.pdf
+gike_72fb616c4988,https://okn-ra.ru/attachments/article/57/!АКТ 08_06_20.pdf,data/okn/evidence/gike_72fb616c4988.pdf
+gike_a92b0ebbafd1,https://okn-ra.ru/attachments/article/57/!АКТ 14_07_21.pdf,data/okn/evidence/gike_a92b0ebbafd1.pdf
+gike_c72106c5bd51,https://okn-ra.ru/attachments/article/57/!АКТ 24-12_21.pdf,data/okn/evidence/gike_c72106c5bd51.pdf
+gike_ee9db18dcafa,https://okn-ra.ru/attachments/article/57/!АКТ 30-12_21 Межелик-1.pdf,data/okn/evidence/gike_ee9db18dcafa.pdf
+gike_5582eed8ae86,https://okn-ra.ru/attachments/article/57/!АКТ 34-12_21.pdf,data/okn/evidence/gike_5582eed8ae86.pdf
+gike_3aa5bc28924d,https://okn-ra.ru/attachments/article/57/!АКТ 35-12_21.pdf,data/okn/evidence/gike_3aa5bc28924d.pdf
+gike_8964e9242b09,https://okn-ra.ru/attachments/article/57/!АКТ №37-02_22.pdf,data/okn/evidence/gike_8964e9242b09.pdf
+gike_5451dbd8bdd2,https://okn-ra.ru/attachments/article/57/!АКТ №38-12_21.pdf,data/okn/evidence/gike_5451dbd8bdd2.pdf
+gike_de0cd6aa03a6,"https://okn-ra.ru/attachments/article/57/1 Акт ГИКЭ ПЗО Аскат, обелиск.pdf",data/okn/evidence/gike_de0cd6aa03a6.pdf
+gike_103ec3913153,https://okn-ra.ru/attachments/article/57/1 Акт ИКЭ ПЗО Горно-Алтайск музей.pdf,data/okn/evidence/gike_103ec3913153.pdf
+gike_9c66a5d5085f,"https://okn-ra.ru/attachments/article/57/2 Акт ГИКЭ ПЗО Бирюля, обелиск.pdf",data/okn/evidence/gike_9c66a5d5085f.pdf
+gike_66f5e023f6ce,https://okn-ra.ru/attachments/article/57/2 Акт ИКЭ ПЗО Горно-Алтайск магазин электротоваров.pdf,data/okn/evidence/gike_66f5e023f6ce.pdf
+gike_2ce42a0d0a43,"https://okn-ra.ru/attachments/article/57/3 Акт ГИКЭ ПЗО Верх-Карагуж, обелиск.pdf",data/okn/evidence/gike_2ce42a0d0a43.pdf
+gike_491e5e989acc,https://okn-ra.ru/attachments/article/57/3 Акт ИКЭ ПЗО Горно-Алтайск мемориал Славы.pdf,data/okn/evidence/gike_491e5e989acc.pdf
+gike_3b999a37d43e,"https://okn-ra.ru/attachments/article/57/4 Акт ГИКЭ ПЗО Куюс, обелиск.pdf",data/okn/evidence/gike_3b999a37d43e.pdf
+gike_4065a29bd2c5,https://okn-ra.ru/attachments/article/57/4 Акт ИКЭ ПЗО Горно-Алтайск п-к борцам за власть Советов.pdf,data/okn/evidence/gike_4065a29bd2c5.pdf
+gike_462412db652e,"https://okn-ra.ru/attachments/article/57/5 Акт ГИКЭ ПЗО Усть-Муны, обелиск.pdf",data/okn/evidence/gike_462412db652e.pdf
+gike_10d186d32632,https://okn-ra.ru/attachments/article/57/5 Акт ИКЭ ПЗО Горно-Алтайск п-к Ленину.pdf,data/okn/evidence/gike_10d186d32632.pdf
+gike_fa3cdc536157,"https://okn-ra.ru/attachments/article/57/6 Акт ГИКЭ ПЗО Горно-Алтайск, купеческий дом Бодунова.pdf",data/okn/evidence/gike_fa3cdc536157.pdf
+gike_da7f5dce2e3d,https://okn-ra.ru/attachments/article/57/АКТ 27-11_19А историко-культурная экспертиза выявленного объекта Яломанское городище.pdf,data/okn/evidence/gike_da7f5dce2e3d.pdf
+gike_381aebf848b1,https://okn-ra.ru/attachments/article/57/АКТ ГИКЭ Достопримечательное место Кумжулу.pdf,data/okn/evidence/gike_381aebf848b1.pdf
+gike_438b1c754279,https://okn-ra.ru/attachments/article/57/Акт 02-07_25.pdf,data/okn/evidence/gike_438b1c754279.pdf
+gike_0bb24859ee7d,https://okn-ra.ru/attachments/article/57/Акт 03_07_25 (1).pdf,data/okn/evidence/gike_0bb24859ee7d.pdf
+gike_baf2cb2c6f04,https://okn-ra.ru/attachments/article/57/Акт ГИКЭ  Раздел Горно- Алтайск.pdf,data/okn/evidence/gike_baf2cb2c6f04.pdf
+gike_8b973e5776cf,https://okn-ra.ru/attachments/article/57/Акт ГИКЭ от 09_08_2025 Раздел Манжерок-3 и Соузге Алтай (1).pdf,data/okn/evidence/gike_8b973e5776cf.pdf
+gike_9afcb3221f88,https://okn-ra.ru/attachments/article/57/Акт ГИКЭ по ЛОС 12.pdf,data/okn/evidence/gike_9afcb3221f88.pdf
+gike_fcbf8a9d3001,https://okn-ra.ru/attachments/article/57/Акт ГИКЭ_Чойский  район_РА_Р256_км41+108-км50+000_2.pdf,data/okn/evidence/gike_fcbf8a9d3001.pdf
+gike_d15af70a4edf,https://okn-ra.ru/attachments/article/57/Акт ГИКЭ_Чойский  район_РА_Р256_км50-км60+484_2.pdf,data/okn/evidence/gike_d15af70a4edf.pdf
+gike_8a1622f0b6c7,https://okn-ra.ru/attachments/article/57/Акт Дом Гуркина 11.10.2025.pdf,data/okn/evidence/gike_8a1622f0b6c7.pdf
+gike_21d7079044ff,https://okn-ra.ru/attachments/article/57/Акт Дом Чорос-Гуркина  05 09 2019.pdf,data/okn/evidence/gike_21d7079044ff.pdf
+gike_5a291e9a4eaf,https://okn-ra.ru/attachments/article/57/Акт Елангаш.pdf,data/okn/evidence/gike_5a291e9a4eaf.pdf
+gike_3f69c8fcaab8,https://okn-ra.ru/attachments/article/57/Акт Туэкта.pdf,data/okn/evidence/gike_3f69c8fcaab8.pdf
+gike_92b2ca0c41bc,https://okn-ra.ru/attachments/article/57/Акт государственной историко-культурной экспертизы выявленного объекта культурного наследия Купеческий дом Бодунова.pdf,data/okn/evidence/gike_92b2ca0c41bc.pdf
+gike_498632edf8e3,https://okn-ra.ru/attachments/article/57/Акт экспертизы НИИА от 12.07.2018.pdf,data/okn/evidence/gike_498632edf8e3.pdf
+gike_115e29dc106f,https://okn-ra.ru/attachments/article/57/Акт_ГИКЭ_АКТ_№_ТА_4-6_10_25[1].pdf,data/okn/evidence/gike_115e29dc106f.pdf
+gike_a09e09284d4b,https://okn-ra.ru/attachments/article/57/ГИКЭ Аэрокомплекс.pdf,data/okn/evidence/gike_a09e09284d4b.pdf
+gike_b71708d35c9e,https://okn-ra.ru/attachments/article/57/Сводка от 09.07.20.PDF,data/okn/evidence/gike_b71708d35c9e.pdf
+gike_554ec8d42c8c,https://okn-ra.ru/attachments/article/57/Сводка от 22.08.21.pdf,data/okn/evidence/gike_554ec8d42c8c.pdf
+gike_e9a44707fbed,https://okn-ra.ru/attachments/article/57/Сводка предложений к Акту ГИКЭ Здание магазина электротоваров.PDF,data/okn/evidence/gike_e9a44707fbed.pdf
+gike_17e1fe2da2a4,https://okn-ra.ru/attachments/article/57/Сводка предложений от 04.02.2019 г..PDF,data/okn/evidence/gike_17e1fe2da2a4.pdf
+gike_2ce45b30980c,https://okn-ra.ru/attachments/article/57/Сводка предложений.pdf,data/okn/evidence/gike_2ce45b30980c.pdf
+boundary_0073e3e80076,https://okn-ra.ru/attachments/article/106/Приказ  от 26 июня 2019 года № 79.pdf,data/okn/evidence/boundary_0073e3e80076.pdf
+boundary_1ecdf1cee69c,https://okn-ra.ru/attachments/article/106/Приказ 101.PDF,data/okn/evidence/boundary_1ecdf1cee69c.pdf
+boundary_056104a8d15b,https://okn-ra.ru/attachments/article/106/Приказ 102.PDF,data/okn/evidence/boundary_056104a8d15b.pdf
+boundary_20836d852870,https://okn-ra.ru/attachments/article/106/Приказ 103.PDF,data/okn/evidence/boundary_20836d852870.pdf
+boundary_5f211367ec4e,https://okn-ra.ru/attachments/article/106/Приказ 104.PDF,data/okn/evidence/boundary_5f211367ec4e.pdf
+boundary_833c272b3c56,https://okn-ra.ru/attachments/article/106/Приказ 105.PDF,data/okn/evidence/boundary_833c272b3c56.pdf
+boundary_0df487fcd052,https://okn-ra.ru/attachments/article/106/Приказ 106.PDF,data/okn/evidence/boundary_0df487fcd052.pdf
+boundary_b1b3c5c7a5a9,https://okn-ra.ru/attachments/article/106/Приказ 107.PDF,data/okn/evidence/boundary_b1b3c5c7a5a9.pdf
+boundary_11c281b2f518,https://okn-ra.ru/attachments/article/106/Приказ 108.PDF,data/okn/evidence/boundary_11c281b2f518.pdf
+boundary_ce50e464f1d7,https://okn-ra.ru/attachments/article/106/Приказ 110.PDF,data/okn/evidence/boundary_ce50e464f1d7.pdf
+boundary_e09e899d597a,https://okn-ra.ru/attachments/article/106/Приказ 111.PDF,data/okn/evidence/boundary_e09e899d597a.pdf
+boundary_8fd5009d9006,https://okn-ra.ru/attachments/article/106/Приказ 112.PDF,data/okn/evidence/boundary_8fd5009d9006.pdf
+boundary_00e4350ac57c,https://okn-ra.ru/attachments/article/106/Приказ 116.PDF,data/okn/evidence/boundary_00e4350ac57c.pdf
+boundary_7b2731a560ca,https://okn-ra.ru/attachments/article/106/Приказ 117.PDF,data/okn/evidence/boundary_7b2731a560ca.pdf
+boundary_0e0359540379,https://okn-ra.ru/attachments/article/106/Приказ 118.PDF,data/okn/evidence/boundary_0e0359540379.pdf
+boundary_00936e0941e6,https://okn-ra.ru/attachments/article/106/Приказ 119.PDF,data/okn/evidence/boundary_00936e0941e6.pdf
+boundary_e55ec92c5efb,https://okn-ra.ru/attachments/article/106/Приказ 120.PDF,data/okn/evidence/boundary_e55ec92c5efb.pdf
+boundary_e5e32376b7f5,https://okn-ra.ru/attachments/article/106/Приказ 121.PDF,data/okn/evidence/boundary_e5e32376b7f5.pdf
+boundary_8374157f7d39,https://okn-ra.ru/attachments/article/106/Приказ 122.PDF,data/okn/evidence/boundary_8374157f7d39.pdf
+boundary_092bda2b993c,https://okn-ra.ru/attachments/article/106/Приказ 123.PDF,data/okn/evidence/boundary_092bda2b993c.pdf
+boundary_140f27e705d8,https://okn-ra.ru/attachments/article/106/Приказ 124.PDF,data/okn/evidence/boundary_140f27e705d8.pdf
+boundary_d6fd3636b5cd,https://okn-ra.ru/attachments/article/106/Приказ 125.PDF,data/okn/evidence/boundary_d6fd3636b5cd.pdf
+boundary_42685b255237,https://okn-ra.ru/attachments/article/106/Приказ 126.PDF,data/okn/evidence/boundary_42685b255237.pdf
+boundary_957f9cf4898b,https://okn-ra.ru/attachments/article/106/Приказ 127.PDF,data/okn/evidence/boundary_957f9cf4898b.pdf
+boundary_ee2ae4eeaca0,https://okn-ra.ru/attachments/article/106/Приказ 128.PDF,data/okn/evidence/boundary_ee2ae4eeaca0.pdf
+boundary_df4318c5b1c6,https://okn-ra.ru/attachments/article/106/Приказ 129.PDF,data/okn/evidence/boundary_df4318c5b1c6.pdf
+boundary_aaed36f88c0f,https://okn-ra.ru/attachments/article/106/Приказ 130.PDF,data/okn/evidence/boundary_aaed36f88c0f.pdf
+boundary_bfe7f7bbf03b,https://okn-ra.ru/attachments/article/106/Приказ 131.PDF,data/okn/evidence/boundary_bfe7f7bbf03b.pdf
+boundary_1aa96cf88d07,https://okn-ra.ru/attachments/article/106/Приказ 132.PDF,data/okn/evidence/boundary_1aa96cf88d07.pdf
+boundary_3135de9a7cfe,https://okn-ra.ru/attachments/article/106/Приказ 133.PDF,data/okn/evidence/boundary_3135de9a7cfe.pdf
+boundary_96ef6ed6dfc1,https://okn-ra.ru/attachments/article/106/Приказ 135.PDF,data/okn/evidence/boundary_96ef6ed6dfc1.pdf
+boundary_46e2b338ddd2,https://okn-ra.ru/attachments/article/106/Приказ 136.PDF,data/okn/evidence/boundary_46e2b338ddd2.pdf
+boundary_1ad4bab688ef,https://okn-ra.ru/attachments/article/106/Приказ 137.PDF,data/okn/evidence/boundary_1ad4bab688ef.pdf
+boundary_f07de40aa0a2,https://okn-ra.ru/attachments/article/106/Приказ 138.PDF,data/okn/evidence/boundary_f07de40aa0a2.pdf
+boundary_ae75874aecc8,https://okn-ra.ru/attachments/article/106/Приказ 141.PDF,data/okn/evidence/boundary_ae75874aecc8.pdf
+boundary_751d48bf2b5b,https://okn-ra.ru/attachments/article/106/Приказ 142.PDF,data/okn/evidence/boundary_751d48bf2b5b.pdf
+boundary_182acdb179c0,https://okn-ra.ru/attachments/article/106/Приказ 143.PDF,data/okn/evidence/boundary_182acdb179c0.pdf
+boundary_c943e8dae126,https://okn-ra.ru/attachments/article/106/Приказ 144.PDF,data/okn/evidence/boundary_c943e8dae126.pdf
+boundary_62a11f024b90,https://okn-ra.ru/attachments/article/106/Приказ 145.PDF,data/okn/evidence/boundary_62a11f024b90.pdf
+boundary_95fe5f3653d9,https://okn-ra.ru/attachments/article/106/Приказ 146.PDF,data/okn/evidence/boundary_95fe5f3653d9.pdf
+boundary_fcdef4f4e926,https://okn-ra.ru/attachments/article/106/Приказ 147.PDF,data/okn/evidence/boundary_fcdef4f4e926.pdf
+boundary_e724bfaec3b6,https://okn-ra.ru/attachments/article/106/Приказ 148.PDF,data/okn/evidence/boundary_e724bfaec3b6.pdf
+boundary_4d4048438a31,https://okn-ra.ru/attachments/article/106/Приказ 151.PDF,data/okn/evidence/boundary_4d4048438a31.pdf
+boundary_395e84db8ce3,https://okn-ra.ru/attachments/article/106/Приказ 152.PDF,data/okn/evidence/boundary_395e84db8ce3.pdf
+boundary_04cc2f2db69e,https://okn-ra.ru/attachments/article/106/Приказ 156.PDF,data/okn/evidence/boundary_04cc2f2db69e.pdf
+boundary_e145df4fef7b,https://okn-ra.ru/attachments/article/106/Приказ 157.PDF,data/okn/evidence/boundary_e145df4fef7b.pdf
+boundary_824dfbfbfdfa,https://okn-ra.ru/attachments/article/106/Приказ 158.PDF,data/okn/evidence/boundary_824dfbfbfdfa.pdf
+boundary_72c18a4fde36,https://okn-ra.ru/attachments/article/106/Приказ 162.PDF,data/okn/evidence/boundary_72c18a4fde36.pdf
+boundary_6e642f7a8f69,https://okn-ra.ru/attachments/article/106/Приказ 163.PDF,data/okn/evidence/boundary_6e642f7a8f69.pdf
+boundary_ddb7011e99e2,https://okn-ra.ru/attachments/article/106/Приказ 164.PDF,data/okn/evidence/boundary_ddb7011e99e2.pdf
+boundary_950ec6f35ea2,https://okn-ra.ru/attachments/article/106/Приказ 174.PDF,data/okn/evidence/boundary_950ec6f35ea2.pdf
+boundary_f060f9e040c0,https://okn-ra.ru/attachments/article/106/Приказ 175.PDF,data/okn/evidence/boundary_f060f9e040c0.pdf
+boundary_0a9529b8c80b,https://okn-ra.ru/attachments/article/106/Приказ 176.PDF,data/okn/evidence/boundary_0a9529b8c80b.pdf
+boundary_436f8f010292,https://okn-ra.ru/attachments/article/106/Приказ 83.PDF,data/okn/evidence/boundary_436f8f010292.pdf
+boundary_e2418f85e8ec,https://okn-ra.ru/attachments/article/106/Приказ от 01 июля 2019 года № 87.PDF,data/okn/evidence/boundary_e2418f85e8ec.pdf
+boundary_da0794af42b6,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 88.pdf,data/okn/evidence/boundary_da0794af42b6.pdf
+boundary_661a0610add8,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 89.pdf,data/okn/evidence/boundary_661a0610add8.pdf
+boundary_efc824363482,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 90.pdf,data/okn/evidence/boundary_efc824363482.pdf
+boundary_29db64000db9,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 91.pdf,data/okn/evidence/boundary_29db64000db9.pdf
+boundary_b70ecda5b5a9,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 92.pdf,data/okn/evidence/boundary_b70ecda5b5a9.pdf
+boundary_a33a58235d36,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 93.pdf,data/okn/evidence/boundary_a33a58235d36.pdf
+boundary_0860a0347167,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 94.pdf,data/okn/evidence/boundary_0860a0347167.pdf
+boundary_574e4b285d78,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 95.pdf,data/okn/evidence/boundary_574e4b285d78.pdf
+boundary_bfcf80d77f23,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 96.pdf,data/okn/evidence/boundary_bfcf80d77f23.pdf
+boundary_99e3e8dbc996,https://okn-ra.ru/attachments/article/106/Приказ от 04 июля 2019 года № 97.pdf,data/okn/evidence/boundary_99e3e8dbc996.pdf
+boundary_60236a56357e,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 103.PDF,data/okn/evidence/boundary_60236a56357e.pdf
+boundary_f28adb7630b2,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 104.PDF,data/okn/evidence/boundary_f28adb7630b2.pdf
+boundary_bc65be35f218,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 105.PDF,data/okn/evidence/boundary_bc65be35f218.pdf
+boundary_3b542d759535,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 106.PDF,data/okn/evidence/boundary_3b542d759535.pdf
+boundary_99856a8b9739,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 107.PDF,data/okn/evidence/boundary_99856a8b9739.pdf
+boundary_940372c49c5e,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 108.PDF,data/okn/evidence/boundary_940372c49c5e.pdf
+boundary_b0588b8d86f0,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 109.PDF,data/okn/evidence/boundary_b0588b8d86f0.pdf
+boundary_b35743b97ed3,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 110.PDF,data/okn/evidence/boundary_b35743b97ed3.pdf
+boundary_eca173d4f365,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 111.PDF,data/okn/evidence/boundary_eca173d4f365.pdf
+boundary_07223e026701,https://okn-ra.ru/attachments/article/106/Приказ от 07.08.2019 г. № 112.PDF,data/okn/evidence/boundary_07223e026701.pdf
+boundary_9ade5a169b1f,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 70.pdf,data/okn/evidence/boundary_9ade5a169b1f.pdf
+boundary_292aff03d5b2,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 71.pdf,data/okn/evidence/boundary_292aff03d5b2.pdf
+boundary_0db0efa61a8d,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 72.pdf,data/okn/evidence/boundary_0db0efa61a8d.pdf
+boundary_4ca3d2b304d0,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 73.pdf,data/okn/evidence/boundary_4ca3d2b304d0.pdf
+boundary_a0b164094170,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 74.pdf,data/okn/evidence/boundary_a0b164094170.pdf
+boundary_17883e44e0cc,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 75.pdf,data/okn/evidence/boundary_17883e44e0cc.pdf
+boundary_b1f9b922635a,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 76.pdf,data/okn/evidence/boundary_b1f9b922635a.pdf
+boundary_28fc77623dd5,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 77.pdf,data/okn/evidence/boundary_28fc77623dd5.pdf
+boundary_8c57b2221200,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 78.pdf,data/okn/evidence/boundary_8c57b2221200.pdf
+boundary_9eadf3bbddbd,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 80.pdf,data/okn/evidence/boundary_9eadf3bbddbd.pdf
+boundary_3b849b8025d1,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 81.pdf,data/okn/evidence/boundary_3b849b8025d1.pdf
+boundary_51a9b7b402a0,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 82.pdf,data/okn/evidence/boundary_51a9b7b402a0.pdf
+boundary_0206a4b8e9df,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года № 83.pdf,data/okn/evidence/boundary_0206a4b8e9df.pdf
+boundary_111ebf84daf1,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года №84.pdf,data/okn/evidence/boundary_111ebf84daf1.pdf
+boundary_a841c9afbb55,https://okn-ra.ru/attachments/article/106/Приказ от 26 июня 2019 года №85.pdf,data/okn/evidence/boundary_a841c9afbb55.pdf
+boundary_544a741e9bf0,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 45 .pdf,data/okn/evidence/boundary_544a741e9bf0.pdf
+boundary_f039f12711e5,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 46.pdf,data/okn/evidence/boundary_f039f12711e5.pdf
+boundary_927ac0bc4fa8,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 47.pdf,data/okn/evidence/boundary_927ac0bc4fa8.pdf
+boundary_dbf243d13c82,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 48.pdf,data/okn/evidence/boundary_dbf243d13c82.pdf
+boundary_89e7ccb7172a,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 49.pdf,data/okn/evidence/boundary_89e7ccb7172a.pdf
+boundary_4b8636eee50b,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 50.pdf,data/okn/evidence/boundary_4b8636eee50b.pdf
+boundary_5af06648dceb,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 51.pdf,data/okn/evidence/boundary_5af06648dceb.pdf
+boundary_c8f4a6eec4eb,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 52.pdf,data/okn/evidence/boundary_c8f4a6eec4eb.pdf
+boundary_db5547ea2edd,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 53.pdf,data/okn/evidence/boundary_db5547ea2edd.pdf
+boundary_9b7e79e9ba39,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 54.pdf,data/okn/evidence/boundary_9b7e79e9ba39.pdf
+boundary_55a88532fdf9,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 55.pdf,data/okn/evidence/boundary_55a88532fdf9.pdf
+boundary_b42cd0c57258,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 56.pdf,data/okn/evidence/boundary_b42cd0c57258.pdf
+boundary_c8d1b0d3cf8f,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 57.pdf,data/okn/evidence/boundary_c8d1b0d3cf8f.pdf
+boundary_35671d4e1844,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 58.pdf,data/okn/evidence/boundary_35671d4e1844.pdf
+boundary_ce8aad6e45dc,https://okn-ra.ru/attachments/article/106/Приказ от 30.11.20 № 59.pdf,data/okn/evidence/boundary_ce8aad6e45dc.pdf
+boundary_593373de911b,https://okn-ra.ru/attachments/article/106/Приказ № 101 от 30.07.2019 года.PDF,data/okn/evidence/boundary_593373de911b.pdf
+boundary_b17ad55c6e3d,https://okn-ra.ru/attachments/article/106/Приказ № 102 от 30.07.2019 года.PDF,data/okn/evidence/boundary_b17ad55c6e3d.pdf
+boundary_464fe582a381,https://okn-ra.ru/attachments/article/106/Приказ № 33 от 28.03.2019 г..pdf,data/okn/evidence/boundary_464fe582a381.pdf
+boundary_f1916afe403b,https://okn-ra.ru/attachments/article/106/Приказ № 34 от 28.03.2019 г..pdf,data/okn/evidence/boundary_f1916afe403b.pdf
+boundary_5fbd0e8f9915,https://okn-ra.ru/attachments/article/106/Приказ № 35 от 28.03.2019 г..pdf,data/okn/evidence/boundary_5fbd0e8f9915.pdf
+boundary_1bc1d7bb25ae,https://okn-ra.ru/attachments/article/106/Приказ № 36 от 28.03.2019 г..pdf,data/okn/evidence/boundary_1bc1d7bb25ae.pdf
+boundary_25948161da84,https://okn-ra.ru/attachments/article/106/Приказ № 46 от 05.06.2019 года.pdf,data/okn/evidence/boundary_25948161da84.pdf
+boundary_819f72556abf,https://okn-ra.ru/attachments/article/106/Приказ № 47 от 05.06.2019 года.pdf,data/okn/evidence/boundary_819f72556abf.pdf
+boundary_9c7cccddb4db,https://okn-ra.ru/attachments/article/106/Приказ № 48 от 05.06.2019 года.pdf,data/okn/evidence/boundary_9c7cccddb4db.pdf
+boundary_b5db096ee72e,https://okn-ra.ru/attachments/article/106/Приказ № 49 от 05.06.2019 года.pdf,data/okn/evidence/boundary_b5db096ee72e.pdf
+boundary_1bb383681586,https://okn-ra.ru/attachments/article/106/Приказ № 50 от 05.06.2019 года.pdf,data/okn/evidence/boundary_1bb383681586.pdf
+boundary_4ba3abbd00c8,https://okn-ra.ru/attachments/article/106/Приказ № 51 от 05.06.2019 года.pdf,data/okn/evidence/boundary_4ba3abbd00c8.pdf
+boundary_98d02c0f16f0,https://okn-ra.ru/attachments/article/106/Приказ № 52 от 05.06.2019 года.pdf,data/okn/evidence/boundary_98d02c0f16f0.pdf
+boundary_38b9cd998b23,https://okn-ra.ru/attachments/article/106/Приказ № 53 от 05.06.2019 года.pdf,data/okn/evidence/boundary_38b9cd998b23.pdf
+boundary_0cfe79e86238,https://okn-ra.ru/attachments/article/106/Приказ № 54 от 05.06.2019 года.pdf,data/okn/evidence/boundary_0cfe79e86238.pdf
+boundary_856b50a7e9ce,https://okn-ra.ru/attachments/article/106/Приказ № 55 от 05.06.2019 года.pdf,data/okn/evidence/boundary_856b50a7e9ce.pdf
+boundary_fa70abcea5ec,https://okn-ra.ru/attachments/article/106/Приказ № 56 от 05.06.2019 года.pdf,data/okn/evidence/boundary_fa70abcea5ec.pdf
+boundary_81715705f7f3,https://okn-ra.ru/attachments/article/106/Приказ № 57 от 05.06.2019 года.pdf,data/okn/evidence/boundary_81715705f7f3.pdf
+boundary_87bbe79d40f8,https://okn-ra.ru/attachments/article/106/Приказ № 58 от 05.06.2019 года.pdf,data/okn/evidence/boundary_87bbe79d40f8.pdf
+boundary_045e9864935b,https://okn-ra.ru/attachments/article/106/Приказ № 59 от 05.06.2019 года.pdf,data/okn/evidence/boundary_045e9864935b.pdf
+boundary_2aa96b5ec5ee,https://okn-ra.ru/attachments/article/106/Приказ № 60 от 05.06.2019 года.pdf,data/okn/evidence/boundary_2aa96b5ec5ee.pdf
+boundary_8932799f6994,https://okn-ra.ru/attachments/article/106/Приказ № 61 от 05.06.2019 года.pdf,data/okn/evidence/boundary_8932799f6994.pdf
+boundary_ab38a289d9e9,https://okn-ra.ru/attachments/article/106/Приказ № 62 от 05.06.2019 года.pdf,data/okn/evidence/boundary_ab38a289d9e9.pdf
+boundary_73467a05e355,https://okn-ra.ru/attachments/article/106/Приказ № 63 от 05.06.2019 года.pdf,data/okn/evidence/boundary_73467a05e355.pdf
+boundary_c5043493bd53,https://okn-ra.ru/attachments/article/106/Приказ № 64 от 05.06.2019 года.pdf,data/okn/evidence/boundary_c5043493bd53.pdf
+boundary_932c349bc1f1,https://okn-ra.ru/attachments/article/106/Приказ № 65 от 05.06.2019 года.pdf,data/okn/evidence/boundary_932c349bc1f1.pdf
+boundary_610f3eea4aad,https://okn-ra.ru/attachments/article/106/Приказ № 66 от 05.06.2019 года.pdf,data/okn/evidence/boundary_610f3eea4aad.pdf
+boundary_2da682095ba1,https://okn-ra.ru/attachments/article/106/Приказ № 67 от 05.06.2019 года.pdf,data/okn/evidence/boundary_2da682095ba1.pdf
+boundary_e49065c72194,https://okn-ra.ru/attachments/article/106/приказ №100.PDF,data/okn/evidence/boundary_e49065c72194.pdf
+boundary_be4a699ccde3,https://okn-ra.ru/attachments/article/106/приказ №84.PDF,data/okn/evidence/boundary_be4a699ccde3.pdf
+boundary_8deddd01a30d,https://okn-ra.ru/attachments/article/106/приказ №85.PDF,data/okn/evidence/boundary_8deddd01a30d.pdf
+boundary_f30d403ff99d,https://okn-ra.ru/attachments/article/106/приказ №86.PDF,data/okn/evidence/boundary_f30d403ff99d.pdf
+boundary_67d52d9dd7ec,https://okn-ra.ru/attachments/article/106/приказ №87.PDF,data/okn/evidence/boundary_67d52d9dd7ec.pdf
+boundary_7fd53561b998,https://okn-ra.ru/attachments/article/106/приказ №88.PDF,data/okn/evidence/boundary_7fd53561b998.pdf
+boundary_acf47ae81fc2,https://okn-ra.ru/attachments/article/106/приказ №89.PDF,data/okn/evidence/boundary_acf47ae81fc2.pdf
+boundary_605ff8ef277e,https://okn-ra.ru/attachments/article/106/приказ №90.PDF,data/okn/evidence/boundary_605ff8ef277e.pdf
+boundary_4f189c20abfa,https://okn-ra.ru/attachments/article/106/приказ №91.PDF,data/okn/evidence/boundary_4f189c20abfa.pdf
+boundary_cd330427c20e,https://okn-ra.ru/attachments/article/106/приказ №92.PDF,data/okn/evidence/boundary_cd330427c20e.pdf
+boundary_c55b0dfa8b9c,https://okn-ra.ru/attachments/article/106/приказ №93.PDF,data/okn/evidence/boundary_c55b0dfa8b9c.pdf
+boundary_8733b61783b6,https://okn-ra.ru/attachments/article/106/приказ №94.PDF,data/okn/evidence/boundary_8733b61783b6.pdf
+boundary_0eb94c5b5814,https://okn-ra.ru/attachments/article/106/приказ №95.PDF,data/okn/evidence/boundary_0eb94c5b5814.pdf
+boundary_fe1160d079c5,https://okn-ra.ru/attachments/article/106/приказ №96.PDF,data/okn/evidence/boundary_fe1160d079c5.pdf
+boundary_087aba12154e,https://okn-ra.ru/attachments/article/106/приказ №97.PDF,data/okn/evidence/boundary_087aba12154e.pdf
+boundary_69cc8e60c0d6,https://okn-ra.ru/attachments/article/106/приказ №98.PDF,data/okn/evidence/boundary_69cc8e60c0d6.pdf
+boundary_cd1aa4bc07de,https://okn-ra.ru/attachments/article/106/приказ №99.PDF,data/okn/evidence/boundary_cd1aa4bc07de.pdf
