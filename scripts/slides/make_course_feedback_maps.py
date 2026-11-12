@@ -7,11 +7,10 @@ import geopandas as gpd
 import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from maptools import HALO, INK, finish, map_figure, save_map
+from maptools import HALO, INK, context_boundaries, finish, map_figure, save_map
 
 DATA = ROOT / 'data'
 OUT = DATA / 'slides'
@@ -60,7 +59,7 @@ def main():
     x0, y0, x1, y1 = border.total_bounds
     interior = (x0 - 26000, y0 - 24000, x1 + 24000, y1 + 27000)
     road_keys = [
-        Line2D([], [], color=FEDERAL, lw=1.8, label='Р-256 и федеральный подъезд к Телецкому озеру'),
+        Line2D([], [], color=FEDERAL, lw=1.8, label='Р-256 и подъезд к Телецкому озеру; A0306 в Монголии'),
         Line2D([], [], color=REGIONAL, lw=1.1, label='Основные региональные направления'),
         Line2D([], [], color='#9c9893', lw=.7, label='Другие магистральные дороги OSM'),
     ]
@@ -68,10 +67,7 @@ def main():
     def base(external=False):
         fig, ax = map_figure()
         if external:
-            view = box(x0 - 180000, y0 - 90000, x1 + 120000, y1 + 155000)
-            # Обрезка полигонов создает ложные границы по краю прямоугольника.
-            boundaries = geo('slides/layers/neighbors_admin1.geojson').boundary.clip(view)
-            boundaries.plot(ax=ax, color='#898682', lw=.55, ls='--', zorder=1)
+            context_boundaries(ax, geo('slides/layers/neighbors_admin1.geojson'), border)
             geo('slides/layers/r256_barnaul.geojson').plot(ax=ax, color=FEDERAL, lw=1.65, zorder=4)
         else:
             mo.boundary.plot(ax=ax, color='#8b8a83', lw=.45, zorder=1)
@@ -80,7 +76,9 @@ def main():
         roads[connector].plot(ax=ax, color=REGIONAL, lw=1.1, zorder=3)
         axes.plot(ax=ax, color=REGIONAL, lw=1.1, zorder=3)
         roads[federal].plot(ax=ax, color=FEDERAL, lw=1.65, zorder=4)
-        border.boundary.plot(ax=ax, color=INK, lw=.95, zorder=2)
+        geo('slides/layers/road_mongolia_a0306.geojson').plot(ax=ax, color=FEDERAL, lw=1.65, zorder=4)
+        if not external:
+            border.boundary.plot(ax=ax, color=INK, lw=.95, zorder=2)
         return fig, ax
 
     def save(fig, ax, extent, handles, name):
@@ -98,7 +96,11 @@ def main():
         'Кош-Агач': (-6, 5), 'Чоя': (-4, 9),
     }.items():
         mark(ax, settlement(name), name, offset=offset)
-    save(fig, ax, interior, road_keys + [symbol('o', INK, 'Населенный пункт / развилка')],
+    checkpoint = points(pd.read_csv(OUT / 'interregional_points.csv'))
+    checkpoint = checkpoint[checkpoint.kind.eq('checkpoint')].iloc[0].geometry
+    mark(ax, checkpoint, 'МАПП Ташанта\nвыход в Монголию', FEDERAL, 'D', (-8, -18), 38, leader=True)
+    save(fig, ax, interior, road_keys + [symbol('o', INK, 'Населенный пункт / развилка'),
+         symbol('D', FEDERAL, 'Международный пункт пропуска')],
          'roads_course')
 
     fig, ax = base()
@@ -158,7 +160,7 @@ def main():
     ]:
         point = points(pd.DataFrame({'longitude': [lon], 'latitude': [lat]})).geometry.iloc[0]
         ax.text(point.x, point.y, label, color='#52514e', fontsize=7.4, ha='center',
-                path_effects=HALO, clip_on=True, zorder=4)
+                path_effects=HALO, clip_on=True, zorder=10)
     protected = geo('oopt/oopt_oczk_2026-10-28.geojson')
     katun = protected[protected['name'].eq('Катунский')]
     assert len(katun) == 1
@@ -172,8 +174,10 @@ def main():
         g = kh[kh.name.eq(nm)]
         if len(g):
             p = g.geometry.iloc[0].representative_point()
-            ax.text(p.x, p.y, short, fontsize=6.4, color='#2c5a3e', ha='center',
-                    path_effects=HALO, zorder=5)
+            dx, dy = (-25000, 45000) if nm == 'Шорский национальный парк' else (20000, 18000)
+            short = short.replace(' нацпарк', '\nнацпарк').replace(' заповедник', '\nзаповедник')
+            ax.text(p.x + dx, p.y + dy, short, fontsize=6.4, color='#2c5a3e', ha='center',
+                    path_effects=HALO, zorder=10)
     for fname in ('coop_mongolia_oopt', 'coop_kazakhstan_oopt', 'coop_china_oopt'):
         g = geo(f'slides/layers/{fname}.geojson')
         if len(g):
@@ -205,13 +209,20 @@ def main():
         }[row.kind]
         mark(ax, row.geometry, row.label.replace('|', '\n'), style[0], style[1],
              (row.dx, row.dy), style[2], leader=row.label == 'Аэропорт|Горно-Алтайск')
-    save(fig, ax, (x0-140000, y0-150000, x1+105000, y1+162000), road_keys + [
+    bounds = gpd.GeoSeries(pd.concat([kh.geometry, roads.geometry], ignore_index=True), crs=CRS).total_bounds
+    extent = (min(x0-140000, bounds[0]-20000), y0-150000,
+              max(x1+105000, bounds[2]+20000), max(y1+162000, bounds[3]+20000))
+    assert extent[0] < bounds[0] and extent[2] > bounds[2] and extent[3] > bounds[3]
+    save(fig, ax, extent, road_keys + [
         symbol('^', REGIONAL, 'Аэропорт'), symbol('s', REGIONAL, 'Транспортный узел'),
         symbol('D', FEDERAL, 'Пункт пропуска'),
         Patch(facecolor=PROTECTED, alpha=.76, edgecolor=ECONOMY, label='Катунский заповедник'),
         Patch(facecolor='none', edgecolor=PROTECTED, hatch='///', label='ООПТ соседних регионов и стран'),
-        Line2D([], [], marker='o', ls='', ms=4, color=ARCH, label='археология Тывы (керескуры)'),
-        Line2D([], [], color='#898682', lw=.55, ls='--', label='границы субъектов и стран'),
+        Line2D([], [], marker='o', ls='', ms=4, color=ARCH, label='керескуры у Кокори (Республика Алтай)'),
+        Line2D([], [], marker='D', ls='', ms=4, mfc='none', mec=ARCH, label='другие памятники археологии (OSM)'),
+        Line2D([], [], color='#626262', lw=.85, ls='-', label='границы субъектов РФ'),
+        Line2D([], [], color='#252525', lw=1.15, ls='-', label='государственные границы'),
+        Line2D([], [], color=INK, lw=2.0, label='граница Республики Алтай'),
     ], 'interregional')
 
 

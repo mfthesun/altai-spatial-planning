@@ -22,7 +22,7 @@ from matplotlib.patches import Patch
 
 R = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(R / "scripts"))
-from maptools import INK, MUTED, finish, map_figure, save_map  # noqa: E402
+from maptools import HALO, INK, MUTED, context_boundaries, finish, map_figure, save_map  # noqa: E402
 
 GREEN_D, GREEN_L, RED, ORANGE = "#3f7f6a", "#a3c6b2", "#b9472a", "#e46a2e"
 OUT = R / "data/slides"
@@ -95,10 +95,23 @@ reg_big.plot(ax=ax, facecolor="none", edgecolor=GREEN_D, linewidth=0.7, hatch="\
 small.plot(ax=ax, color=GREEN_D, marker="o", markersize=12, zorder=4)
 cut.plot(ax=ax, color=ORANGE, marker="s", markersize=26, edgecolor=INK, linewidth=0.5, zorder=5)
 flood.plot(ax=ax, color=RED, marker="^", markersize=34, edgecolor=INK, linewidth=0.5, zorder=6)
-ra.boundary.plot(ax=ax, color=INK, linewidth=1.2, zorder=7)
+neighbors = gpd.read_file(R / 'data/slides/layers/neighbors_admin1.geojson').to_crs(32645)
+boundary_keys = context_boundaries(ax, neighbors, ra)
+nearby = pd.concat([gpd.read_file(R / f'data/slides/layers/{name}.geojson').to_crs(32645)
+                    for name in ['coop_khakassia_oopt', 'coop_kazakhstan_oopt',
+                                 'coop_mongolia_oopt', 'coop_china_oopt']], ignore_index=True)
+nearby.plot(ax=ax, facecolor='none', edgecolor='#6c9767', linewidth=.8, hatch='...', zorder=3)
+for lon, lat, name in [(84.95, 53.17, 'АЛТАЙСКИЙ КРАЙ'), (87.2, 52.96, 'КУЗБАСС'),
+                       (90.05, 52.06, 'ХАКАСИЯ'), (89.52, 50.85, 'ТЫВА'),
+                       (83.96, 49.77, 'КАЗАХСТАН'), (88.64, 49.06, 'МОНГОЛИЯ'),
+                       (87.6, 47.9, 'КИТАЙ')]:
+    p = gpd.GeoSeries(gpd.points_from_xy([lon], [lat]), crs=4326).to_crs(32645).iloc[0]
+    ax.text(p.x, p.y, name, fontsize=7, color=MUTED, ha='center', path_effects=HALO, zorder=10)
 
 bx = ra.total_bounds
-EXTENT = (bx[0] - 150000, bx[1] - 70000, bx[2] + 90000, bx[3] + 180000)
+all_bounds = pd.concat([oopt.geometry, nearby.geometry], ignore_index=True).total_bounds
+EXTENT = (min(bx[0] - 150000, all_bounds[0] - 20000), min(bx[1] - 150000, all_bounds[1] - 20000),
+          max(bx[2] + 150000, all_bounds[2] + 20000), max(bx[3] + 180000, all_bounds[3] + 20000))
 ox0, oy0, ox1, oy1 = oopt.total_bounds
 assert len(oopt) == 55
 assert EXTENT[0] <= ox0 and EXTENT[1] <= oy0 and EXTENT[2] >= ox1 and EXTENT[3] >= oy1
@@ -109,8 +122,9 @@ handles = [
     Line2D([], [], marker="o", ls="", ms=5, color=GREEN_D, label="памятники природы"),
     Line2D([], [], marker="^", ls="", ms=8, mfc=RED, mec=INK, label="зона подтопления"),
     Line2D([], [], marker="s", ls="", ms=7, mfc=ORANGE, mec=INK, label="риск разрыва связи в паводок"),
+    Patch(facecolor='none', edgecolor='#6c9767', hatch='...', label='ООПТ соседних регионов и стран (выборка)'),
 ]
-finish(fig, ax, extent=EXTENT, handles=handles, title="Условные обозначения", basemap_style="relief")
+finish(fig, ax, extent=EXTENT, handles=handles + boundary_keys, title="Условные обозначения", basemap_style="relief")
 save_map(fig, OUT / "map_07_constraints.png")
 plt.close(fig)
 print("сохранено:", OUT / "map_07_constraints.png")
