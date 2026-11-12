@@ -3,6 +3,8 @@
 Читает data/access_results/services_by_settlement.geojson (scripts/access/services_access.py)
 и data/access_inputs/schools_osm.geojson, primary_care_osm.geojson.
 Пишет data/access_results/map_access_school.png и map_access_primary_care.png.
+Карта первичной помощи содержит исторический расчет по отмененному № 543н и предназначена
+только для архива, не для актуальной презентации; действующий порядок — приказ № 202н.
 Запуск из корня репозитория: python scripts/access/make_services_maps.py
 """
 import sys
@@ -61,7 +63,7 @@ finish(fig, ax, extent=EXTENT, basemap_style="relief", basemap_alpha=0.5,
        handles=h + [SIZE_NOTE, Line2D([], [], marker="s", ls="", ms=4, color=INK, label=f"школа (OSM, {len(schools)})")] + BASE)
 save_map(fig, OUT / "map_access_school.png")
 
-# 2. ПМСП: время до ближайшего пункта (РНГП РА, СП 42: 30 мин в сёлах) и дефицит по приказу № 543н
+# 2. ПМСП: время доступности и исторический дефицит по отмененному № 543н — только архив
 fig, ax = base()
 h = dots(ax, "pmsp_min", [-1, 15, 30, 60, 120, 1e6], ["до 15", "15–30 (норматив — до 30)", "30–60", "60–120", "больше 120"])
 MARK = {"ФАП": ("o", 12), "врачебная амбулатория": ("D", 16), "участковая больница / амбулатория (СТП)": ("D", 16),
