@@ -2,6 +2,8 @@
 data/raw/*
 !data/raw/README.md
 data/sources/
+data/okn/evidence/*
+!data/okn/evidence/bodunov_nominatim.json
 *.zip
 *.pdf
 results/
@@ -11,6 +13,7 @@ dem/
 __pycache__/
 .ipynb_checkpoints/
 .venv/
+tmp/
 .DS_Store
 .iduedu_cache/
 .claude/chat-exports/
