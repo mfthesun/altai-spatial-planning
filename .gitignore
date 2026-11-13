@@ -17,3 +17,7 @@ tmp/
 .DS_Store
 .iduedu_cache/
 .claude/chat-exports/
+
+# локальные резервные копии; версии исходников сохраняются в истории Git
+*.backup-*
+*~
