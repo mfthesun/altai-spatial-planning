@@ -4,6 +4,8 @@
 
 Цель — концепция пространственного развития Республики Алтай на горизонтах 2035/2050.
 
+Итог текущего этапа: [отчет по задачам №1–8 и границы приемки](docs/issue_closure_2026-11-13.md), [22 слайда основного показа](docs/final_presentation_2026-11-13.md), [проверка карт](docs/map_visual_audit_2026-11-13.md).
+
 **Репозиторий открыт: подключиться может любой участник — см. [CONTRIBUTING.md](CONTRIBUTING.md). Задачи команды — в [Issues](https://github.com/mfthesun/altai-spatial-planning/issues).**
 
 **Презентация (Figma Slides): [https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso](https://www.figma.com/slides/YU7UHNRFIcDRq8dqVq1Qso)** — общая рабочая копия, слайды заполняет каждый участник по своему разделу.

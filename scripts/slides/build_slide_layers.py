@@ -4,7 +4,8 @@
 - границы 11 МО — OSM, отношения admin_level=6 (полигоны через Nominatim /lookup по osm_id);
 - магистрали trunk/primary в РА с буфером — OSM через Overpass (зеркало из OVERPASS_URL);
 - соседние регионы России и страны — Natural Earth 10m admin_1 (public domain).
-Пишет data/slides/layers/*.geojson (EPSG:4326, геометрия упрощена до ~100 м).
+Пишет data/slides/layers/*.geojson (EPSG:4326). МО и дороги упрощены,
+соседние территории сохранены без независимого упрощения общих сторон.
 Запуск из корня репозитория: python scripts/slides/build_slide_layers.py
 """
 import json
@@ -21,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "slides" / "layers"
 OUT.mkdir(parents=True, exist_ok=True)
 OVERPASS = os.getenv("OVERPASS_URL", "https://overpass-api.de/api/interpreter")
-NE = ("https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/"
+NE = ("https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/"
       "ne_10m_admin_1_states_provinces.geojson")
 SIMPLIFY = 0.001  # градусы, ≈ 100 м
 
@@ -78,7 +79,7 @@ print("магистрали:", len(roads), "отрезков, из них Р-256
 # 3. соседи: регионы России и страны вокруг РА
 ne = gpd.read_file(NE)
 ne = ne.cx[78:96, 45:57][["name", "name_ru", "admin", "iso_a2", "geometry"]]  # name_ru у Алтайского края ошибочно «Республика Алтай»
-ne["geometry"] = ne.geometry.simplify(SIMPLIFY * 3)
+# Независимое упрощение полигонов разрывает общие границы при их пересечении.
 ne.to_file(OUT / "neighbors_admin1.geojson", driver="GeoJSON")
 print("регионы Natural Earth в рамке:", len(ne))
 

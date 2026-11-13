@@ -138,12 +138,24 @@
     }
   ],
   "maps_sha256": {
-    "data/model/map_model_draft.png": "f486b67aa0a8835ca61ace9c2109b7abca0a219b965e563a8b115838e21887ce",
-    "data/slides/map_03_agglomeration.png": "3dbcb7c13e2c9f29c5479c7842d38b84c3462c3d808f0988e0132a2b702ed38b",
-    "data/slides/map_07_constraints.png": "498cd6713a96814407fc9bee328f504876723ce9059c40f1d0cf6ddf5b526e89",
-    "data/slides/map_09_heritage.png": "cdcee0db4bc14a39468dd7e0dc838eee41112f1bde19ea3309f9ac136b154953",
-    "data/slides/map_heritage_route.png": "52de2c4d154aa19fcec222117a08e3083b348b2caedbfeca5dfa8417dedb93e0",
-    "data/slides/map_interregional.png": "f214f821b6e1c06e051123e4a9da5a7fc8cfe19d7e6a586dadf6c82ea93eb3fd",
-    "data/slides/map_roads_course.png": "1726c9a7dbb25c2cf2ae629ef7f3ee94770f7e652dc74a44a3d969f5d34a2145"
-  }
+    "data/slides/map_interregional.png": "01a978670ea7d5cf06f3963aac9bf6bdc03163222f0b452a98a90a91c7cb88ba",
+    "data/slides/map_02_reform_status.png": "3557e4f22a7a548c1aaec158fd37bb5260644b20ec4731cdf00e19eb4e8b110a",
+    "data/slides/map_03_agglomeration.png": "97c83eac0fb71ba2fade415850d6fc35aba69482afa624eea1e89448def5b7b2",
+    "data/slides/map_onp_course.png": "d7a5dee3d11b4bee1f9e6550de843599e9a0908a26ca1e0494f3c4ff23584fcc",
+    "data/slides/map_05_economy.png": "b445cb71d1bf3236e243cd4cc18b20dc9ae7f46980c7caece156889f58c03650",
+    "data/slides/map_roads_course.png": "5214ef401c087801dd534ed438c23ad58d7229adf72e2952cde0f45165158e3f",
+    "data/slides/map_07_constraints.png": "5ece176c3de8a75e7b9d4b521477e6251f461d7d45b519095cbfd69e96cdda27",
+    "data/slides/map_09_heritage.png": "55fdbe39c15523fbf5a1ee136b11e6ac482dfe6110c6740c75551be9d730a62a",
+    "data/model/map_model_draft.png": "45222b38a2500d8838a708f40b9b4bafa6382a901a510b9ecc48b5f8fa67cc0f",
+    "data/slides/map_heritage_route.png": "d1225842f72f2fa2a5963c2503e639a9492ffe8922659d6895336f953a1be283",
+    "data/slides/map_support_plan.png": "0f4895e7df26766f7dbe17477eaf841b42b9ed18ff1588f7c938ed0f36840754",
+    "data/access_results/map_time_republican_hospital.png": "dc1923831facb6c0b556870c41a58a629c52253f285e1bbe06ed66c24935236f",
+    "data/slides/map_settlement_vulnerability.png": "b86b3aa9808ea48eb5447f71bf2292e784972abc1484af96634eab204cd28cb5"
+  },
+  "map_visual_audit": "docs/map_visual_audit_2026-11-13.md",
+  "medical_editable_legend_nodes": [
+    "4394:2",
+    "4394:28",
+    "4394:54"
+  ]
 }

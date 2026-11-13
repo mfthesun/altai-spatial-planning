@@ -14,7 +14,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from maptools import HALO, INK, finish, map_figure, save_map
+from maptools import FEDERAL, MINOR_ROAD, HALO, INK, finish, map_figure, save_map
 
 CRS = 32645
 OUT = ROOT / 'data/slides'
@@ -42,7 +42,8 @@ def main():
     def base():
         fig, ax = map_figure()
         mo.boundary.plot(ax=ax, color='#777777', lw=.5, zorder=2)
-        roads.plot(ax=ax, color='#888888', lw=.6, zorder=3)
+        roads.plot(ax=ax, color=MINOR_ROAD, lw=.6, zorder=3)
+        roads[roads.ref.str.contains('Р-256', na=False)].plot(ax=ax, color=FEDERAL, lw=1.8, zorder=6)
         border.boundary.plot(ax=ax, color=INK, lw=1, zorder=5)
         return fig, ax
 
@@ -97,7 +98,8 @@ def main():
                     arrowprops={'arrowstyle': '-', 'color': INK, 'lw': .5} if dx or dy else None)
         labels.append(name)
     assert len(labels) == len(m) == 11
-    handles.append(Line2D([], [], color='#888888', label='Основные дороги (OSM)'))
+    handles += [Line2D([], [], color=FEDERAL, lw=1.8, label='Р-256 и подъезд к Телецкому озеру'),
+                Line2D([], [], color=MINOR_ROAD, label='Другие основные дороги (OSM)')]
     finish(fig, ax, extent, handles, title='Выплаты налоговых агентов\nна жителя, 2025', basemap_alpha=.5)
     save_map(fig, OUT / 'map_05_economy.png')
 
@@ -122,8 +124,9 @@ def main():
         ax.annotate(row['mo'].replace(' район','')+'\n'+str(int(row['итого'])), (p.x,p.y), (p.x+dx,p.y+dy),
                     ha='center',fontsize=7,path_effects=HALO,zorder=9,
                     arrowprops={'arrowstyle':'-', 'color':INK, 'lw':.5} if dx or dy else None)
-    handles += [Line2D([],[],color='#612e78',lw=1.8,label='Южное ядро: 71 из 117 федеральных ОКН'),
-                Line2D([],[],color='#888888',lw=.6,label='Основные дороги (OSM)')]
+    handles += [Line2D([],[],color=FEDERAL,lw=1.8,label='Р-256 и подъезд к Телецкому озеру'),
+                Line2D([],[],color='#612e78',lw=1.8,label='Южное ядро: 71 из 117 федеральных ОКН'),
+                Line2D([],[],color=MINOR_ROAD,lw=.6,label='Другие основные дороги (OSM)')]
     finish(fig,ax,extent,handles,basemap_alpha=.5)
     save_map(fig,OUT/'map_09_heritage.png')
 

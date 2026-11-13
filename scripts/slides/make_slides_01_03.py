@@ -18,7 +18,7 @@ from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import HALO, finish, map_figure, no_yo, save_map  # noqa: E402
+from maptools import FEDERAL, MINOR_ROAD, context_boundaries, HALO, finish, map_figure, no_yo, save_map  # noqa: E402
 OUT = ROOT / "data" / "slides"
 LAY = OUT / "layers"
 CRS = 32645  # UTM 45N для отрисовки
@@ -77,12 +77,11 @@ def label(ax, pt, text, dx=6000, dy=6000, **kw):
 # --- 01. Положение и коридоры --------------------------------------------------------------
 fig, ax = map_figure()
 veil_outside(ax)
-regions.plot(ax=ax, color=MUTED, lw=0.5, ls="--", zorder=2)
-countries.plot(ax=ax, color=INK, lw=1.0, ls="-.", zorder=2)
+context_boundaries(ax, nb, border)
 mo.boundary.plot(ax=ax, color=MUTED, lw=0.5, zorder=2)
 border.boundary.plot(ax=ax, color=INK, lw=1.4, zorder=3)
-roads[~roads.index.isin(r256.index)].plot(ax=ax, color="#9b9a94", lw=0.6)
-r256.plot(ax=ax, color=RAMP[3], lw=2.2)
+roads[~roads.index.isin(r256.index)].plot(ax=ax, color=MINOR_ROAD, lw=0.6)
+r256.plot(ax=ax, color=FEDERAL, lw=1.8, zorder=4)
 ax.scatter(centers.geometry.x, centers.geometry.y, s=14, color=INK, edgecolor=SURFACE, lw=0.8, zorder=4)
 ga = centers[centers.mo == "г. Горно-Алтайск"].geometry.iloc[0]
 ax.scatter([ga.x], [ga.y], s=60, color=INK, edgecolor=SURFACE, lw=1, zorder=5)
@@ -112,16 +111,16 @@ for country, ru_name, (dx, dy) in [("Kazakhstan", "КАЗАХСТАН", (0, 0)),
     if not g.is_empty:
         c = g.representative_point()
         ax.annotate(ru_name, (c.x + dx, c.y + dy), color=MUTED, fontsize=9, ha="center", fontweight="bold")
-finish(fig, ax, extent=view.bounds, handles=[Line2D([], [], color=RAMP[3], lw=2.2, label="Р-256 «Чуйский тракт»"),
-                   Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистральные и основные дороги"),
+finish(fig, ax, extent=view.bounds, handles=[Line2D([], [], color=FEDERAL, lw=1.8, zorder=4, label="Р-256 «Чуйский тракт»"),
+                   Line2D([], [], color=MINOR_ROAD, lw=0.6, label="другие магистральные и основные дороги"),
                    Line2D([], [], marker="o", ls="", ms=7, color=INK, label="Горно-Алтайск"),
                    Line2D([], [], marker="o", ls="", ms=4, color=INK, label="районные центры"),
                    Line2D([], [], marker="o", ls="", ms=4, color=MUTED, label="города за пределами РА"),
                    Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=RAMP[3], label="внешние выходы"),
                    Line2D([], [], color=INK, lw=1.2, label="граница Республики Алтай"),
                    Line2D([], [], color=MUTED, lw=0.5, label="границы муниципальных образований"),
-                   Line2D([], [], color=MUTED, lw=0.5, ls="--", label="границы регионов"),
-                   Line2D([], [], color=INK, lw=1.0, ls="-.", label="государственная граница")],
+                   Line2D([], [], color=MUTED, lw=0.5, ls="-", label="границы регионов"),
+                   Line2D([], [], color=INK, lw=1.0, ls="-", label="государственная граница")],
        basemap_style="relief")
 save_map(fig, OUT / "map_01_position.png")
 
@@ -242,8 +241,8 @@ iso_col = {30: "#c9561f", 60: "#e98a4e", 90: "#f4bb8f"}  # поверх подл
 for _, r in iso.iterrows():
     gpd.GeoSeries([r.geometry], crs=CRS).plot(ax=ax, color=iso_col[int(r["dist"])], alpha=0.7, lw=0, zorder=1.5)
 mo[mo.oktmo.isin(["84701000", "84615000"])].boundary.plot(ax=ax, color=INK, lw=1.4)
-roads.plot(ax=ax, color="#9b9a94", lw=0.6)
-r256.plot(ax=ax, color=RAMP[3], lw=1.8)
+roads.plot(ax=ax, color=MINOR_ROAD, lw=0.6)
+r256.plot(ax=ax, color=FEDERAL, lw=1.8, zorder=4)
 big = st[st.population >= 1000]
 ax.scatter(big.geometry.x, big.geometry.y, s=4 + big.population ** 0.5 * 0.6, facecolor='none', edgecolor=INK,
            lw=0.6, zorder=4)
@@ -259,8 +258,8 @@ finish(fig, ax, extent=(ga.x - 110000, ga.y - 130000, ga.x + 110000, ga.y + 7000
                    Patch(color=iso_col[90], alpha=0.7, label=f"60–90 мин (всего до 90 мин — {share_t[90]:.0f} %)"),
                    Line2D([], [], color=INK, lw=1.4, label="Горно-Алтайск + Майминский район"),
                    Line2D([], [], color=MUTED, lw=0.6, label="границы муниципальных образований"),
-                   Line2D([], [], color=RAMP[3], lw=1.8, label="Р-256 «Чуйский тракт»"),
-                   Line2D([], [], color="#9b9a94", lw=0.6, label="другие магистрали"),
+                   Line2D([], [], color=FEDERAL, lw=1.8, zorder=4, label="Р-256 «Чуйский тракт»"),
+                   Line2D([], [], color=MINOR_ROAD, lw=0.6, label="другие магистрали"),
                    Line2D([], [], marker="o", ls="", ms=5, mfc='none', mec=INK, label="населённые пункты от 1 000 жителей\n(размер — население)"),
                    Line2D([], [], color=MUTED, lw=0.6, ls="-", label="граница с Алтайским краем")],
        title="Условные обозначения\nвремя в пути от Горно-Алтайска:", basemap_style="relief")

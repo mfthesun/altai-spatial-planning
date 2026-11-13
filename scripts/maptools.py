@@ -18,12 +18,15 @@
 import math
 import re
 import textwrap
+import numpy as np
+from pathlib import Path
 
 import contextily as cx
 import geopandas as gpd
 import matplotlib.patheffects as pe
 import xyzservices.providers as xyz
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
 from matplotlib.patches import FancyArrow, Rectangle
 from matplotlib.lines import Line2D
 from pyproj import Transformer
@@ -38,9 +41,12 @@ SCALE_LOC = (0.035, 0.035)            # левый нижний угол лин�
 SCALE_FRAC = 0.25                     # длина линейки — около четверти ширины поля
 NICE_KM = [2, 4, 10, 20, 50, 100, 200, 400]  # середина линейки (половина длины) — целое число км
 INK, MUTED, SURFACE = "#0b0b0b", "#52514e", "#ffffff"  # фон слайдов презентации
+FEDERAL, REGIONAL, MINOR_ROAD = '#ad401f', '#33637d', '#9c9893'
 HALO = [pe.withStroke(linewidth=2.5, foreground=SURFACE)]
 TITLE_WRAP, LABEL_WRAP = 34, 34       # символов в строке колонки условных обозначений
 ATTR_LOC = (0.995, 0.006)             # правый нижний угол поля карты: атрибуция подложки
+font_manager.fontManager.addfont(Path(__file__).resolve().parents[1] / 'assets/fonts/Inter.ttf')
+font_manager.fontManager.addfont(Path(__file__).resolve().parents[1] / 'assets/fonts/Inter-Bold.ttf')
 
 
 def _shared_boundaries(frame):
@@ -58,10 +64,10 @@ def context_boundaries(ax, neighbors, border):
     assert neighbors.crs == border.crs and neighbors.iso_a2.nunique() >= 3
     halo = [pe.withStroke(linewidth=3.5, foreground=SURFACE)]
     _shared_boundaries(neighbors[neighbors.iso_a2.eq('RU')]).plot(
-        ax=ax, color='#626262', lw=.85, ls='-', path_effects=halo, zorder=5)
+        ax=ax, color='#626262', lw=.85, ls='-', path_effects=halo, zorder=3.2)
     _shared_boundaries(neighbors.dissolve(by='iso_a2')).plot(
-        ax=ax, color='#252525', lw=1.15, ls='-', path_effects=halo, zorder=6)
-    border.boundary.plot(ax=ax, color=INK, lw=2.0, path_effects=halo, zorder=7)
+        ax=ax, color='#252525', lw=1.15, ls='-', path_effects=halo, zorder=3.4)
+    border.boundary.plot(ax=ax, color=INK, lw=2.0, path_effects=halo, zorder=3.6)
     return [Line2D([], [], color='#626262', lw=.85, ls='-', label='границы субъектов РФ'),
             Line2D([], [], color='#252525', lw=1.15, ls='-', label='государственные границы'),
             Line2D([], [], color=INK, lw=2.0, label='граница Республики Алтай')]
@@ -83,11 +89,12 @@ NUM = re.compile(r"(\d) (?=[^\s—–])")  # число не отрываетс�
 def _wrap(text, width):
     """Перенос по словам; после коротких слов — неразрывный пробел, «—» не начинает строку."""
     lines = (NUM.sub("\\1\u00a0", SHORT.sub("\\1\u00a0", line)).replace(" —", "\u00a0—") for line in text.split("\n"))
-    return "\n".join(textwrap.fill(line, width) for line in lines)
+    return "\n".join(textwrap.fill(re.sub(r"(?<=[А-Яа-я])-(?=[А-Яа-я0-9])", "‑", line), width, break_long_words=False, break_on_hyphens=False) for line in lines)
 
 
 def map_figure():
     """Рисунок стандартного размера с полем карты на стандартном месте."""
+    plt.rcParams['font.family'] = 'Inter'
     fig = plt.figure(figsize=FIG_SIZE)
     ax = fig.add_axes(MAP_RECT)
     ax.set_axis_off()
@@ -157,10 +164,22 @@ def basemap(ax, style="relief", crs=32645, alpha=1.0):
     fw, _ = ax.figure.get_size_inches()
     field_px = fw * DPI * MAP_RECT[2]
     x0, x1 = ax.get_xlim()
+    y0, y1 = ax.get_ylim()
     width_m = max(abs(x1 - x0), 1.0)
     zoom = min(12, max(0, math.ceil(math.log2(field_px * 40075016.0 / (256.0 * width_m)))))
+    # Запас тайлов закрывает пустые углы мозаики после перепроецирования в UTM.
+    ax.set_xlim(x0 - .05 * width_m, x1 + .05 * width_m)
+    ax.set_ylim(y0 - .05 * (y1 - y0), y1 + .05 * (y1 - y0))
     cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10,
                    reset_extent=True, alpha=alpha, zoom=zoom)
+    # Пустой серый тайл Esri встречается на одном уровне пирамиды; берем тот же слой уровнем ниже.
+    raster = np.asarray(ax.images[-1].get_array())
+    if ((raster[..., :3] == (51, 52, 54)).all(axis=-1)).sum() > 100:
+        ax.images[-1].remove()
+        cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10,
+                       reset_extent=True, alpha=alpha, zoom=max(0, zoom - 1))
+    ax.set_xlim(x0, x1)
+    ax.set_ylim(y0, y1)
     ax.text(*ATTR_LOC, f"Подложка: {attribution}", transform=ax.transAxes, ha="right", va="bottom",
             fontsize=5.5, color=MUTED, path_effects=HALO, zorder=21, wrap=True)
 
@@ -189,6 +208,19 @@ def no_yo(fig):
 
 def save_map(fig, path):
     """Без обрезки по содержимому: все карты одного размера, оформление на одних местах."""
+    prioritize_map_labels(fig)
     no_yo(fig)
+    fig.canvas.draw()
+    for legend in fig.legends:
+        bounds = legend.get_window_extent(fig.canvas.get_renderer())
+        assert fig.bbox.contains(bounds.x0, bounds.y0) and fig.bbox.contains(bounds.x1, bounds.y1), f'Легенда выходит за холст: {path}'
     fig.savefig(path, dpi=DPI)
     plt.close(fig)
+
+
+def prioritize_map_labels(fig):
+    """Надписи поверх геометрии; легенды и другие оси не меняют порядок друг друга."""
+    for ax in fig.axes:
+        label_layer = max([artist.get_zorder() for artist in ax.collections + ax.lines + ax.patches] + [30]) + 1
+        for text in ax.texts:
+            text.set_zorder(label_layer)

@@ -18,7 +18,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import HALO, INK, MUTED, SURFACE, context_boundaries, finish, map_figure, save_map  # noqa: E402
+from maptools import FEDERAL, REGIONAL, HALO, INK, MUTED, SURFACE, context_boundaries, finish, map_figure, save_map  # noqa: E402
 
 OUT = ROOT / "data" / "model"
 LAY = ROOT / "data" / "slides" / "layers"
@@ -84,12 +84,12 @@ heritage.plot(ax=ax, marker='D', color='#612e78', markersize=10, alpha=.8, zorde
 r256 = roads[roads.ref.str.contains("Р-256", na=False)]
 tel = r256[r256.name.str.contains("Телецкий", na=False)]
 chuy = r256.drop(tel.index)
-chuy.plot(ax=ax, color=INK, lw=3.0, zorder=4)
-gpd.read_file(ROOT / 'data/slides/layers/road_mongolia_a0306.geojson').to_crs(CRS).plot(ax=ax, color=INK, lw=3.0, zorder=4)
-tel.plot(ax=ax, color=INK, lw=1.8, zorder=4)
+chuy.plot(ax=ax, color=FEDERAL, lw=1.8, zorder=4)
+gpd.read_file(ROOT / 'data/slides/layers/road_mongolia_a0306.geojson').to_crs(CRS).plot(ax=ax, color=FEDERAL, lw=1.8, zorder=4)
+tel.plot(ax=ax, color=FEDERAL, lw=1.8, zorder=4)
 # вторые оси — по реальным дорогам: кратчайший путь на горном графе (scripts/model/build_axes.py)
 axes = gpd.read_file(ROOT / "data" / "model" / "layers" / "axes_secondary.geojson").to_crs(CRS)
-axes.plot(ax=ax, color=INK, lw=1.8, ls="--", zorder=4)
+axes.plot(ax=ax, color=REGIONAL, lw=1.1, ls="-", zorder=4)
 # узлы
 official = csv("data/slides/onp_decree_222.csv").oktmo.astype(str)
 is_official = onp.oktmo.astype(str).isin(official)
@@ -97,7 +97,7 @@ assert (is_official.sum(), (~is_official).sum()) == (9, 6)
 ax.scatter(onp[is_official].geometry.x, onp[is_official].geometry.y, s=24, color="#096953", edgecolor=SURFACE, lw=0.5, zorder=5)
 ax.scatter(onp[~is_official].geometry.x, onp[~is_official].geometry.y, s=32, marker="D", facecolor="none", edgecolor="#ad401f", lw=1.1, zorder=5)
 c = gpd.GeoSeries([pt(n) for n in centers if n not in INTER], crs=CRS)
-ax.scatter(c.x, c.y, s=45, color=INK, edgecolor=SURFACE, lw=0.8, zorder=6)
+ax.scatter(c.x, c.y, s=28, facecolor="none", edgecolor=INK, lw=0.8, zorder=6)
 for n in INTER:
     p = pt(n)
     ax.scatter([p.x], [p.y], s=150, marker="s", color="#b9472a", edgecolor=INK, lw=1.2, zorder=7)
@@ -149,13 +149,13 @@ finish(fig, ax, extent=extent, basemap_style="relief",
        handles=[Patch(facecolor=col, alpha=0.45, edgecolor=col, label=name) for name, (_, col) in TEZ.items()] +
                [Line2D([], [], marker="o", ls="", ms=12, mfc="#b9472a", mec=INK, label="ядро: Горно-Алтайск — Майма"),
                 Line2D([], [], marker="s", ls="", ms=9, mfc="#b9472a", mec=INK, label="межрайонный центр"),
-                Line2D([], [], marker="o", ls="", ms=6, mfc=INK, mec=SURFACE, label="районный центр"),
+                Line2D([], [], marker="o", ls="", ms=5, mfc="none", mec=INK, label="районный центр"),
                 Line2D([], [], marker="o", ls="", ms=5, color="#096953", label="сельские ОНП (9)"),
                 Line2D([], [], marker="D", ls="", ms=5, mfc="none", mec="#ad401f", label="опорные центры (6)"),
                 Line2D([], [], marker="P", ls="", ms=7, color="#b9472a", label="точки стационарной помощи (3)"),
-                Line2D([], [], color=INK, lw=3.0, label="Р-256; продолжение A0306 в Монголии"),
-                Line2D([], [], color=INK, lw=1.8, label="подъезд к Телецкому озеру"),
-                Line2D([], [], color=INK, lw=1.8, ls="--", label="широтные оси"),
+                Line2D([], [], color=FEDERAL, lw=1.8, label="Р-256; продолжение A0306 в Монголии"),
+                Line2D([], [], color=FEDERAL, lw=1.8, label="подъезд к Телецкому озеру"),
+                Line2D([], [], color=REGIONAL, lw=1.1, ls="-", label="широтные оси"),
                 Line2D([], [], marker="D", ls="", mfc=SURFACE, mec=INK, label="внешний выход"),
                 Patch(facecolor="none", edgecolor="#2f6b3a", hatch="////", label="ООПТ Алтая и соседние участки"),
                 Line2D([], [], marker="o", ls="", ms=4, color="#612e78", label="археологические объекты (OSM)"),
