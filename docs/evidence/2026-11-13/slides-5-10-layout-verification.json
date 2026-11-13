@@ -1,0 +1,271 @@
+{
+  "reference_slide": 6,
+  "restored_map_frame_on_slide": 5,
+  "raster_nodes_checked": [
+    {
+      "id": "4020:3",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4020:10",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4020:22",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4235:44",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4098:16",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4098:30",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4098:44",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4098:58",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4023:43",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4343:2",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4175:6",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4228:206",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4202:44",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4341:2",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4341:3",
+      "strokes": [],
+      "mode": "FIT"
+    },
+    {
+      "id": "4228:280",
+      "strokes": [],
+      "mode": "FIT"
+    }
+  ],
+  "native_container_audit": [
+    {
+      "slide": "4072:62",
+      "containers": [
+        {
+          "id": "4072:67",
+          "name": "Карта: ввод жилья на жителя",
+          "type": "FRAME",
+          "w": 1000,
+          "h": 760,
+          "strokes": []
+        },
+        {
+          "id": "4072:118",
+          "name": "Правая колонка",
+          "type": "FRAME",
+          "w": 616,
+          "h": 561,
+          "strokes": []
+        }
+      ]
+    },
+    {
+      "slide": "4072:132",
+      "containers": [
+        {
+          "id": "4349:3",
+          "name": "final22_content_fit",
+          "type": "GROUP",
+          "w": 1576.05419921875,
+          "h": 779.9998779296875
+        },
+        {
+          "id": "4072:137",
+          "name": "Карта: газ агломерации",
+          "type": "FRAME",
+          "w": 944.3099365234375,
+          "h": 717.675537109375,
+          "strokes": []
+        },
+        {
+          "id": "4072:216",
+          "name": "Легенда",
+          "type": "FRAME",
+          "w": 307.8450012207031,
+          "h": 203.1573944091797,
+          "strokes": []
+        },
+        {
+          "id": "4072:239",
+          "name": "Правая колонка",
+          "type": "FRAME",
+          "w": 581.6948852539062,
+          "h": 775.2784423828125,
+          "strokes": []
+        }
+      ]
+    },
+    {
+      "slide": "4098:72",
+      "containers": [
+        {
+          "id": "4089:163",
+          "name": "Картограмма: качество воды",
+          "type": "FRAME",
+          "w": 1020.8999633789062,
+          "h": 747,
+          "strokes": []
+        }
+      ]
+    },
+    {
+      "slide": "4072:253",
+      "containers": [
+        {
+          "id": "4346:2",
+          "name": "final22_engineering_content",
+          "type": "GROUP",
+          "w": 1659.75634765625,
+          "h": 780
+        },
+        {
+          "id": "4324:324",
+          "name": "Обеспеченность сетями Горно-Алтайска",
+          "type": "FRAME",
+          "w": 760.0487060546875,
+          "h": 604.2387084960938,
+          "strokes": []
+        }
+      ]
+    }
+  ],
+  "final": {
+    "nodes": [
+      {
+        "id": "4235:44",
+        "w": 1114,
+        "h": 780,
+        "x": 128,
+        "y": 160,
+        "strokes": [],
+        "fills": [
+          {
+            "type": "IMAGE",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "scaleMode": "FIT",
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "imageTransform": [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            "imageHash": "857bd1c4fc1ffbe31c3b078d6bfa50f67cc49b95"
+          }
+        ]
+      },
+      {
+        "id": "4098:16",
+        "w": 1114,
+        "h": 780,
+        "x": 128,
+        "y": 160,
+        "strokes": [],
+        "fills": [
+          {
+            "type": "IMAGE",
+            "visible": true,
+            "opacity": 1,
+            "blendMode": "NORMAL",
+            "scaleMode": "FIT",
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "imageTransform": [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            "imageHash": "cfa29156167339c7f1c46744e15c50787286c26d"
+          }
+        ]
+      }
+    ],
+    "housingLegend": {
+      "id": "4072:103",
+      "w": 200,
+      "h": 138,
+      "title": "Ввод жилья 2021–2025\nм² на 1 жителя",
+      "labelOverlaps": []
+    }
+  }
+}
