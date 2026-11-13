@@ -10,13 +10,11 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from maptools import HALO, INK, context_boundaries, finish, map_figure, save_map
+from maptools import FEDERAL, REGIONAL, MINOR_ROAD, HALO, INK, context_boundaries, finish, map_figure, save_map
 
 DATA = ROOT / 'data'
 OUT = DATA / 'slides'
 CRS = 32645
-FEDERAL = '#ad401f'
-REGIONAL = '#33637d'
 TOURISM = '#853483'
 ECONOMY = '#096953'
 PROTECTED = '#4e9464'
@@ -33,12 +31,14 @@ def points(table):
 
 
 def symbol(marker, color, label, fill=None):
-    return Line2D([], [], marker=marker, ls='', ms=6, mec=color, mfc=fill or color, label=label)
+    return Line2D([], [], marker=marker, ls='', ms=6, mec=color, mfc=('none' if marker == 'o' and color == INK else fill or color), label=label)
 
 
 def mark(ax, geometry, label, color=INK, marker='o', offset=(4, 4), size=23, leader=False):
-    ax.scatter(geometry.x, geometry.y, marker=marker, s=size, color=color,
-               edgecolors='white', linewidths=.65, zorder=8)
+    plain_settlement = marker == 'o' and color == INK
+    ax.scatter(geometry.x, geometry.y, marker=marker, s=size,
+               facecolors='none' if plain_settlement else color,
+               edgecolors=color if plain_settlement else 'white', linewidths=.65, zorder=8)
     if label:
         ax.annotate(label, (geometry.x, geometry.y), xytext=offset, textcoords='offset points',
                     color=color, fontsize=7.3, path_effects=HALO,
@@ -61,7 +61,7 @@ def main():
     road_keys = [
         Line2D([], [], color=FEDERAL, lw=1.8, label='Р-256 и подъезд к Телецкому озеру; A0306 в Монголии'),
         Line2D([], [], color=REGIONAL, lw=1.1, label='Основные региональные направления'),
-        Line2D([], [], color='#9c9893', lw=.7, label='Другие магистральные дороги OSM'),
+        Line2D([], [], color=MINOR_ROAD, lw=.7, label='Другие магистральные дороги OSM'),
     ]
 
     def base(external=False):
@@ -72,7 +72,7 @@ def main():
         else:
             mo.boundary.plot(ax=ax, color='#8b8a83', lw=.45, zorder=1)
         connector = roads.ref.fillna('').str.contains('84К-102|32[КР]-589')
-        roads[~(federal | connector)].plot(ax=ax, color='#9c9893', lw=.65, zorder=2)
+        roads[~(federal | connector)].plot(ax=ax, color=MINOR_ROAD, lw=.65, zorder=2)
         roads[connector].plot(ax=ax, color=REGIONAL, lw=1.1, zorder=3)
         axes.plot(ax=ax, color=REGIONAL, lw=1.1, zorder=3)
         roads[federal].plot(ax=ax, color=FEDERAL, lw=1.65, zorder=4)
@@ -104,8 +104,8 @@ def main():
          'roads_course')
 
     fig, ax = base()
-    st.plot(ax=ax, color='#77877f', markersize=st.population.clip(lower=1).pow(.48)*.36,
-            alpha=.68, zorder=5)
+    st.plot(ax=ax, facecolor='none', edgecolor='#77877f', markersize=st.population.clip(lower=1).pow(.48)*.36,
+            lw=.5, alpha=.68, zorder=5)
     for name, label, offset in [
         ('Горно-Алтайск', 'Горно-Алтайск — Майма', (-4, 10)),
         ('Усть-Кан', 'Усть-Кан', (-5, 5)), ('Онгудай', 'Онгудай', (4, 5)),
@@ -119,13 +119,13 @@ def main():
     ]:
         mark(ax, settlement(name), label, TOURISM, '^', offset, 43)
     save(fig, ax, interior, road_keys + [
-        symbol('o', '#77877f', 'населённые пункты (размер — население)'),
+        symbol('o', '#77877f', 'населённые пункты (размер — население)', 'none'),
         symbol('s', ECONOMY, 'экономический узел'),
         symbol('^', TOURISM, 'туристический узел'),
     ], 'support_plan')
 
     fig, ax = base()
-    st.plot(ax=ax, color='#8e948f', markersize=5, alpha=.55, zorder=5)
+    st.plot(ax=ax, facecolor='none', edgecolor='#8e948f', markersize=5, lw=.5, alpha=.55, zorder=5)
     official = pd.read_csv(OUT / 'onp_decree_222.csv', dtype={'oktmo': str})
     official = official.merge(st.assign(oktmo=st.oktmo.astype(str)), on='oktmo',
                                 validate='one_to_one', how='left', indicator=True)
@@ -148,8 +148,22 @@ def main():
                     path_effects=HALO, zorder=10,
                     arrowprops={'arrowstyle': '-', 'color': FEDERAL, 'lw': .65,
                                 'shrinkA': 2, 'shrinkB': 3})
-    save(fig, ax, interior, onp_key + [symbol('o', '#8e948f', 'Другие населенные пункты')]
+    save(fig, ax, interior, onp_key + [symbol('o', '#8e948f', 'Другие населенные пункты', 'none')]
          + road_keys, 'onp_course')
+
+    # Резервная карта: те же ОНП и дороги, плюс сохраненный расчет доступности.
+    access = geo('access_results/time_to_hospital.geojson')
+    isolated = access[access.tmin_mount_A > 60]
+    assert len(isolated) == 56 and round(isolated.pop_2025_est.sum()) == 16479
+    fig, ax = base()
+    st.plot(ax=ax, facecolor='none', edgecolor='#8e948f', markersize=5, lw=.5, zorder=5)
+    isolated.plot(ax=ax, facecolor='none', edgecolor=FEDERAL, markersize=48, lw=1.1, zorder=6)
+    official.plot(ax=ax, color=ECONOMY, markersize=32, edgecolor='white', lw=.5, zorder=7)
+    additions.plot(ax=ax, facecolor='none', edgecolor=FEDERAL, marker='D', markersize=46, lw=1.1, zorder=7)
+    for name, offset in [('Горно-Алтайск', (-5, 8)), ('Усть-Кан', (-5, 5)), ('Кош-Агач', (-6, 5))]:
+        mark(ax, settlement(name), name, offset=offset, size=15)
+    save(fig, ax, interior, [symbol('o', FEDERAL, 'вне 60 мин от больницы: 56 НП', 'none')]
+         + onp_key + road_keys, 'settlement_vulnerability')
 
     fig, ax = base(external=True)
     for lon, lat, label in [
@@ -187,8 +201,10 @@ def main():
         g = geo(f'slides/layers/{fname}.geojson')
         if len(g):
             p = g.geometry.iloc[0].representative_point()
-            ax.text(p.x, p.y, short, fontsize=6.4, color='#2c5a3e', ha='center',
-                    path_effects=HALO, zorder=5)
+            dx, dy = (30000, -60000) if fname == 'coop_mongolia_oopt' else (-20000, 10000)
+            ax.annotate(short, (p.x, p.y), (p.x + dx, p.y + dy), fontsize=6.4,
+                        color='#2c5a3e', ha='left' if dx > 0 else 'right', path_effects=HALO,
+                        arrowprops={'arrowstyle': '-', 'color': '#2c5a3e', 'lw': .5}, zorder=10)
     ARCH = '#612e78'
     ty = geo('slides/layers/coop_tyva_archaeology.geojson')
     ker = ty[ty.name.eq('керескур')]

@@ -27,7 +27,7 @@ CRS = 32645  # UTM 45N для отрисовки
 FROM_RESULTS = (RES / "time_to_hospital_flat_vs_mountain.geojson").exists()
 SRC = RES if FROM_RESULTS else OUT
 sys.path.insert(0, str(ROOT / "scripts"))
-from maptools import finish, map_figure, save_map  # noqa: E402
+from maptools import FEDERAL, MINOR_ROAD, finish, map_figure, save_map  # noqa: E402
 
 # ординальная шкала времени, светлое → тёмное (проверена validate_palette.js --ordinal)
 RAMP = ["#ef9a5f", "#e46a2e", "#bf4d1c", "#8f360e", "#5a1f05"]
@@ -79,10 +79,13 @@ else:  # пересобираем только карты: таблицы счи
 def base(ax):
     border.boundary.plot(ax=ax, color=MUTED, lw=0.8)
     if edges is not None:
-        edges.plot(ax=ax, color="#b9b8b1", lw=0.5, zorder=1)
+        edges.plot(ax=ax, color=MINOR_ROAD, lw=0.5, zorder=1)
+    roads = gpd.read_file(ROOT / 'data/slides/layers/roads_main.geojson').to_crs(CRS)
+    roads[roads.ref.str.contains('Р-256', na=False)].plot(ax=ax, color=FEDERAL, lw=1.8, zorder=2.5)
 
 
 SIZE_NOTE = Line2D([], [], color=SURFACE, lw=0, label="размер кружка — число жителей")
+ROAD_KEY = Line2D([], [], color=FEDERAL, lw=1.8, label='Р-256 и подъезд к Телецкому озеру')
 bx0, by0, bx1, by1 = border.total_bounds
 EXTENT = (bx0 - 15000, by0 - 15000, bx1 + 15000, by1 + 15000)
 
@@ -109,7 +112,7 @@ ax.scatter(hosp.geometry.x, hosp.geometry.y, marker="P", s=60, c=INK, edgecolor=
 finish(fig, ax, extent=EXTENT, handles=h + [SIZE_NOTE, Line2D([], [], marker="P", ls="", c=INK, label="больница (11)"),
                        Line2D([], [], color=INK, ls="--", lw=0.6, label="зона 60 мин"),
                        Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
-                       Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
+                       ROAD_KEY, Line2D([], [], color=MINOR_ROAD, lw=0.5, label="другие магистрали")],
        title="Условные обозначения\nнаселённые пункты: время\nдо ближайшей больницы, мин", basemap_style="relief", basemap_alpha=0.5)
 save_map(fig, OUT / "map_time_nearest_hospital.png")
 
@@ -125,7 +128,7 @@ finish(fig, ax, extent=EXTENT, handles=h + [SIZE_NOTE] + [Line2D([], [], color=I
                        for d, ls in zip(sorted(iso_ga["dist"].unique()), [":", "--", "-"])] +
                       [Line2D([], [], marker="P", ls="", c=INK, label="Республиканская больница"),
                        Line2D([], [], color=MUTED, lw=0.8, label="граница Республики Алтай"),
-                       Line2D([], [], color="#b9b8b1", lw=0.5, label="магистрали")],
+                       ROAD_KEY, Line2D([], [], color=MINOR_ROAD, lw=0.5, label="другие магистрали")],
        title="Условные обозначения\nнаселённые пункты: время\nдо Республиканской больницы, мин", basemap_style="relief", basemap_alpha=0.5)
 save_map(fig, OUT / "map_time_republican_hospital.png")
 

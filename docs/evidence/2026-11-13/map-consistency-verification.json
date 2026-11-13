@@ -1,0 +1,62 @@
+{
+  "images": [
+    {
+      "id": "4341:2",
+      "hash": "212fbc9ef4d1d527b2f92b6aec93dc6ed0c4792a",
+      "mode": "FIT"
+    },
+    {
+      "id": "4341:3",
+      "hash": "239da6477d7003b873679f95d7fc7603e1c04cb9",
+      "mode": "FIT"
+    },
+    {
+      "id": "4228:280",
+      "hash": "c169a75fb34a6f31e7b312789bcda7af33af13a7",
+      "mode": "FIT"
+    }
+  ],
+  "legends": [
+    {
+      "id": "4072:103",
+      "w": 322,
+      "h": 138,
+      "overflow": []
+    },
+    {
+      "id": "4072:216",
+      "w": 307.8450012207031,
+      "h": 203.1573944091797,
+      "overflow": []
+    },
+    {
+      "id": "4072:318",
+      "w": 344.8721008300781,
+      "h": 170.0596923828125,
+      "overflow": []
+    },
+    {
+      "id": "4394:2",
+      "w": 230,
+      "h": 560,
+      "overflow": []
+    },
+    {
+      "id": "4394:28",
+      "w": 230,
+      "h": 560,
+      "overflow": []
+    },
+    {
+      "id": "4394:54",
+      "w": 320.2749938964844,
+      "h": 780,
+      "overflow": []
+    }
+  ],
+  "slideCount": 37,
+  "medicalSourceImagesUnchanged": true,
+  "mapCount": 20,
+  "rasterUpdated": 13,
+  "nativeLegendUpdated": 7
+}
